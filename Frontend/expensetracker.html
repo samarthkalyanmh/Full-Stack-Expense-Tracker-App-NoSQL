@@ -6,167 +6,49 @@
 
 
     <style>
-        
-       *{
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        }
-        body
-        {
-            background-color:rgb(143, 139, 133);
-        }
-
-
     </style>
     <title>
-        Expense Tracker App
+        Expense Tracker
     </title>
-    <body>
-        
 
-        <section class="container my-20 bg-dark w-50 text-light p-2" style="margin-top:60px;">
-            <form class="row g-3" action="#" onsubmit="submitform(event)" >
+    <body style="background-color: dimgray;">
+        <section class="container my-20 bg-dark w-50 text-light p-2" style="margin-top:60px; padding-bottom: 200px;">
+            <form class="row g-3" onsubmit="saveExpenseToDatabase(event)">
 
                 <div class="col-12">
-                    <label for="amount" class="form-label">Expense Amount</label>
-                    <input type="text" class="form-control" id="amount" autocomplete="off">
+                    <label for="amount" class="form-label">Expense Amount</label> 
+                    <input type="number" class="form-control" id="amount" >
                   </div>
                   
                 <div class="col-12">
                   <label for="description" class="form-label">Description</label>
-                  <input type="text" class="form-control" id="description" autocomplete="off">
+                  <input type="text" class="form-control" id="description" >
                 </div>
-            
-                <div class="col-12" style="margin-top:20px">
-                    <label for="category" class="form-label">Choose a category:</label>
-                    <input list="browsers" name="browser" id="category" class="form-control" autocomplete="off"> 
-                    <datalist id="browsers">
-                        <option value="Fuel">
-                        <option value="Food">
-                        <option value="Electricity">
-                        <option value="Movie">
-                    </datalist>
-                </div>  
-
+                
+                <div class="col-12">
+                    <label for="category">Choose a category:</label><br>
+                    <select style="width:100%;" class="form-select" aria-label="Default select example" id="category">
+                        <option selected>Choose category</option>
+                        <option value="fuel">Fuel</option>
+                        <option value="food">Food</option>
+                        <option value="electricity">Electricty</option>
+                        <option value="movie">Movie</option>
+                      </select>
+                </div>
+                
                 <div class="col-12 text-center mt-4" >
-                  <button type="submit" class="btn btn-primary float-" >Submit</button>
+                  <button type="submit" class="btn btn-primary float-" >Add Expense</button>
                 </div>
               </form>
               <br> <br>
-              <h2 style="text-align:center; padding-bottom: 80px;">List of Expenses</h2>
-              <div class="listo" id="list">
+              <h2 style="text-align:center; padding-bottom: 80px; text-decoration: underline;">List of Expenses</h2>
+              <div id="list">
 
               </div>
         </section>
 
-        <script >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
-
-          let dltbtn = document.getElementById('list');
-          dltbtn.addEventListener('click', deleteFromList);
-
-          function deleteFromList(e)
-          {
-            console.log('getting delete event')
-            if(e.target.classList.contains('delete-button'))
-            {  
-                let div = document.getElementById('list')
-                let li = e.target.parentElement;
-                console.log(li)
-                let str = li.textContent
-
-                str= str.split(',')
-
-                div.removeChild(li);
-                
-                localStorage.removeItem(str[1])
-            }
-          }
-            
-            function submitform(event)
-            {
-
-
-                event.preventDefault();
-
-                //Getting values of input elements
-                const amount=document.getElementById('amount').value;
-                const description = document.getElementById('description').value;
-                const category = document.getElementById('category').value;
-
-                //Storing input values in an object
-                let obj={
-                    amount: amount,
-                    description: description,
-                    category: category
-                };
-
-                //Serializing values of the object and storing in local storage
-                let obj_serialized = JSON.stringify(obj);
-                localStorage.setItem(description ,obj_serialized);
-
-                //Creating string of input element in order to display in UI
-                let str = amount + ',' + description +','+ category;
-
-                //Creating div element and appending string to it
-                let elem = document.createElement('div');
-                elem.className = 'new-item';
-                elem.textContent = str;
-
-                //Getting parent div element in order to append child
-                let parentdiv = document.getElementById('list')
-                
-                //Creating delete button and appending to div element
-                let btn = document.createElement('input')   
-                btn.className = 'delete-button'
-                btn.type = 'button'
-                btn.value = 'X'
-                btn.style.backgroundColor = 'red'
-                elem.appendChild(btn)
-
-                //Creating edit button
-                let btnedit = document.createElement('input')
-                btnedit.type = 'button'
-                btnedit.value = 'edit'
-                elem.appendChild(btnedit)
-
-                //Finally appending our div element to parent
-                parentdiv.appendChild(elem)
-
-                //Edit functionality
-                btnedit.onclick = () =>
-                {
-                    let par = btnedit.parentElement
-                    let str = par.textContent.split(',')
-                    console.log(str)
-
-                    localStorage.removeItem(str[1])  
-                    let mainparent = par.parentElement
-                    mainparent.removeChild(par)
-
-                    let amount = document.getElementById('amount')
-                    amount.value = str[0]
-                    let description = document.getElementById('description')
-                    description.value= str[1]
-                    let category= document.getElementById('category')
-                    category.value = str[2]
-                
-                }
-
-                
-            document.getElementById('amount').value= ''
-            document.getElementById('description').value = ''
-            document.getElementById('category').value = ''
-
-            //Instead of writing separate function for delete we can just use below code
-            //  btn.onclick = () =>
-            //  {
-            //   localStorage.removeItem(obj.description)
-            //   let par = btn.parentElement
-            //   par.removeChild(btn.parentElement)
-            //  }
-            }
-         </script>
-    </body>
+<script src="frontend.js"></script>
+</body>
 </html>
