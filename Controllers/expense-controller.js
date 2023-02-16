@@ -68,10 +68,12 @@ const login = async (req, res, next) => {
         else{
             const name = req.body.name
             const email = req.body.email
+            const password = req.body.password
     
             const data = await User.create({
                 name: name,
-                email: email
+                email: email,
+                password: password
             })
             .then()
             .catch()
