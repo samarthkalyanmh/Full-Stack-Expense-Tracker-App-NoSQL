@@ -15,7 +15,7 @@ async function signup(e){
         }
     
         const response = await axios.post('http://localhost:5/user/signup', userDetails)
-        console.log(response)
+        // console.log(response)
         
         document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
 

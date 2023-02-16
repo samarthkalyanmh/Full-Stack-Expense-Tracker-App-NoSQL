@@ -56,21 +56,26 @@ const editExpense = async (req, res, next) => {
 
 const login = async(req, res, next) => {
 
-    try{
+    try{ 
+        console.log('email sent in request ', req.body.email)
+
         const userTryingToLogin = await User.findAll({where: {email: req.body.email}})
+        console.log('User details ',userTryingToLogin)
 
-        if(!userTryingToLogin){
+        if(userTryingToLogin.length === 0){
            return res.status(404).json("user doesn't exist")
-        } else if(userTryingToLogin[0].dataValues.email === req.body.email){
 
-            const usersStoredPassword = await User.findAll({where: {password: req.body.password}})
+        } else if(userTryingToLogin[0].email === req.body.email){
+
+            const usersStoredPassword = await User.findAll({where: {email: req.body.email}})
+
             if(usersStoredPassword[0].password === req.body.password){
                 return res.status(200).json("login successful")
             } else{
-                return res.status(200).json("login failed")
+                return res.status(400).json("login failed")
             }
         }
-        // console.log('user Trying to login ', userTryingToLogin[0].dataValues.email)
+        
 
     } catch(err){
         console.log('err is ', err)
