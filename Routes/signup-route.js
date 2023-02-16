@@ -4,6 +4,6 @@ const router = express.Router()
 
 const expenseController = require('../Controllers/expense-controller')
 
-router.post('/user/login', expenseController.login) 
+router.post('/user/signup', expenseController.signup)
 
 module.exports = router

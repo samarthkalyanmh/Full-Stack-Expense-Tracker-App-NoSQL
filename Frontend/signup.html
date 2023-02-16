@@ -9,8 +9,12 @@
 </head>
 <body style="background-color: rgb(125, 117, 103);">
     <section class="container my-20 badge-dark w-50 text-light p-2" style="margin-top:60px; padding-bottom: 200px; ">
-        <form class="row g-3" onsubmit="login(event)">
-        
+        <form class="row g-3" onsubmit="signup(event)">
+            <div class="col-12">
+                <label for="name" class="form-label">Name</label> 
+                <input type="text" class="form-control" id="name" required>
+              </div>
+              
             <div class="col-12">
               <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control" id="email" required>
@@ -22,18 +26,18 @@
               </div>
             
             <div class="col-12 text-center mt-4" >
-              <button type="submit" class="btn btn-primary float-" >Login</button>
+              <button type="submit" class="btn btn-primary float-" >SignUp</button>
             </div>
           </form>
           <br> <br>
           <div class="col-md-12 text-center">
-            <a href="./signup.html"><button type="button" class="btn btn-primary">New User? SignUp</button></a> 
+            <a href="./login.html"><button type="button" class="btn btn-primary">Existing User? Login</button></a> 
           </div>
           
     </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
-<script src="login.js"></script>
+<script src="signup.js"></script>
 </body>
 </html>

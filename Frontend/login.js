@@ -1,22 +1,21 @@
-function signup(e){
-    e.preventDefault()
+async function login(e){
     
-    let name = document.getElementById('name').value
-    let email = document.getElementById('email').value
-    let password = document.getElementById('password').value
+    try{
+        e.preventDefault()
 
+        let email = document.getElementById('email').value
+        let password = document.getElementById('password').value
+    
+    
+        const userDetails = {
+            email,
+            password
+        }
+    
+        const response = await axios.post('http://localhost:5/user/login', userDetails)
+        console.log(response)
 
-    const userDetails = {
-        name,
-        email,
-        password
+    } catch(err){
+        console.log(err)    
     }
-
-    axios.post('http://localhost:5/user/login', userDetails)
-    .then(res => {
-        console.log(res.data)
-    })
-    .catch(err => {
-        console.log(err)
-    })
 }
