@@ -57,8 +57,9 @@ function showExpenseOnScreen(expense){
     
     console.log(expense)
     try{
-        let expenseLi = `<li id='${expense.id}'>${expense.amount}-${expense.description}-${expense.category}
-        <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete Expense</button>
+        let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
+        <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
+        <button onclick=editExpense(${expense.id})>Edit</button>
         </li>`
         let parDiv = document.getElementById('list')
 
@@ -100,7 +101,15 @@ function removeExpenseFromUi(id){
 
 function editExpense(id){
     try{
-        
+            let content = document.getElementById(id).firstElementChild.innerText
+            let vals = content.split('-')
+            console.log(vals)
+
+            document.getElementById('amount').value = vals[0]
+            document.getElementById('description').value = vals[1]
+            document.getElementById('category').value = vals[2]
+            deleteExpense(id)
+
     } catch(err){
         console.log(err)
     }

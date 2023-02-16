@@ -11,15 +11,6 @@ const getAllExpenses = async (req, res, next) => {
     
 }
 
-const editExpense = async (req, res, next) => {
-    try{
-        
-
-    } catch(err){
-
-    }
-}
-
 const addExpense = async (req, res, next) => {
 
     try{
@@ -55,6 +46,16 @@ const deleteExpense = async (req, res, next) => {
         res.send(err)
     }
     
+}
+
+//
+const editExpense = async (req, res, next) => {
+    try{
+        
+
+    } catch(err){
+
+    }
 }
 
 module.exports = {
