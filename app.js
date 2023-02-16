@@ -17,11 +17,13 @@ sequelize.sync()
 const getAllExpensesRoute = require('./Routes/getAllExpenses-route')
 const addExpenseRoute = require('./Routes/addExpense-route')
 const deleteExpenseRoute = require('./Routes/deleteExpense-route')
+const loginroute = require('./Routes/login-route')
+
 
 
 app.use(getAllExpensesRoute)
 app.use(addExpenseRoute)
 app.use(deleteExpenseRoute)
-
+app.use(loginroute)
 
 app.listen(5)

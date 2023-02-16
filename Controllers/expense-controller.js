@@ -1,4 +1,6 @@
 const Expense = require('../Models/expense-model');
+const User = require('../Models/userLogin-model');
+
 
 const getAllExpenses = async (req, res, next) => {
 
@@ -58,9 +60,35 @@ const editExpense = async (req, res, next) => {
     }
 }
 
+const login = async (req, res, next) => {
+    try{
+        if(!req.body.name || !req.body.email){
+            throw new Error('Both are mandatory fields')
+        }
+        else{
+            const name = req.body.name
+            const email = req.body.email
+    
+            const data = await User.create({
+                name: name,
+                email: email
+            })
+            .then()
+            .catch()
+    
+            res.status(201).json(data)
+        }
+        
+    } catch(err){
+        res.send(500).json(err)
+    }
+}
+
+
 module.exports = {
     getAllExpenses,
     addExpense,
     deleteExpense, 
-    editExpense
+    editExpense,
+    login
 }
