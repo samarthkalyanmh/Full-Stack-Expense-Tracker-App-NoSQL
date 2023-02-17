@@ -13,7 +13,6 @@ async function login(e){
         }
     
         const response = await axios.post('http://localhost:5/user/login', userDetails)
-        // console.log(response.data[0].data)
 
         if(response.status === 200){
             document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data}</h2>`
@@ -21,25 +20,16 @@ async function login(e){
             setTimeout(()=>{
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
-
-        } else if(response.status === 400){
-            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data}</h2>`
-
-            setTimeout(()=>{
-                document.body.removeChild(document.body.lastElementChild) 
-            }, 2000)
-
-        } else if(response.status === 404){
-            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data}</h2>`
-
-            setTimeout(()=>{
-                document.body.removeChild(document.body.lastElementChild) 
-            }, 2000)
+        } else {
+            throw new Error(response.data)
         }
 
-        console.log(response)
-
     } catch(err){
-        console.log(err)    
+
+            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${err}</h2>`
+
+            setTimeout(()=>{
+                document.body.removeChild(document.body.lastElementChild) 
+            }, 2000)
     }
 }

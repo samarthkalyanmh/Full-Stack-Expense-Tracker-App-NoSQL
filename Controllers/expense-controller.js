@@ -1,5 +1,6 @@
 const Expense = require('../Models/expense-model');
 const User = require('../Models/userLogin-model');
+const bcrypt = require('bcrypt')
 
 
 const getAllExpenses = async (req, res, next) => {
@@ -57,6 +58,11 @@ const editExpense = async (req, res, next) => {
 const login = async(req, res, next) => {
 
     try{ 
+
+
+        if(!req.body.email || !req.body.password){
+            return res.status(400).json("bad parameters")
+        }
         console.log('email sent in request ', req.body.email)
 
         const userTryingToLogin = await User.findAll({where: {email: req.body.email}})
@@ -76,43 +82,36 @@ const login = async(req, res, next) => {
             }
         }
         
-
     } catch(err){
         console.log('err is ', err)
     }
-    
-
 }
 
 const signup = async (req, res, next) => {
     try{
-        if(!req.body.name || !req.body.email || !req.body.password){
-            // throw new Error('Both are mandatory fields')
+
+        const {name, email, password} = req.body
+
+        const userTryingToSignup = await User.findAll({where: {email: req.body.email}})
+
+        if(userTryingToSignup.length > 0){
+            return res.status(400).json("user exists already, click on login")
+        }
+
+        if(!name || !email || !password){
             return res.status(400).json({message: "bad parameters, something is missing"})
         }
         else{
-            const name = req.body.name
-            const email = req.body.email
-            const password = req.body.password
-    
-            const data = await User.create({
-                name: name,
-                email: email,
-                password: password
-            })
-            .then(() => {
+            bcrypt.hash(password, 10, async (err, hash) => {
+                await User.create({ name, email, password: hash}) 
                 res.status(201).json({message: 'Successfully created new user'})
             })
-            .catch(err => {
-                res.status(500).json(err)
-            })
         }
-        
+
     } catch(err){
         res.status(500).json(err)
     }
 }
-
 
 module.exports = {
     getAllExpenses,
