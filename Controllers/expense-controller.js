@@ -56,11 +56,9 @@ const editExpense = async (req, res, next) => {
 }
 
 const login = async(req, res, next) => {
-
     try{ 
-        
-        const {email, password} = req.body
 
+        const {email, password} = req.body
 
         if(!email || !password){
             return res.status(400).json("bad parameters")
@@ -73,17 +71,23 @@ const login = async(req, res, next) => {
         if(userTryingToLogin.length === 0){
            return res.status(404).json("user doesn't exist")
 
-        } else if(userTryingToLogin[0].email === email){
+        } else{
 
-            if(userTryingToLogin[0].password === req.body.password){
-                return res.status(200).json("login successful")
-            } else{
-                return res.status(400).json("login failed")
-            }
+            bcrypt.compare(password, userTryingToLogin[0].password, (err, result) => {
+                if(err){
+                    throw new Error("Something went wrong")
+                }
+                if(result){
+                    return res.status(200).json("login successful")
+                } else {
+                    return res.status(400).json("Incorrect password")
+                }
+            })
         }
         
     } catch(err){
         console.log('err is ', err)
+        res.status(500).json(err)
     }
 }
 

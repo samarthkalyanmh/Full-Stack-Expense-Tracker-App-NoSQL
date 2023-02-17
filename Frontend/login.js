@@ -20,6 +20,9 @@ async function login(e){
             setTimeout(()=>{
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
+
+            window.location.href = "./expensetracker.html"
+
         } else {
             throw new Error(response.data)
         }
