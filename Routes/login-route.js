@@ -1,9 +1,8 @@
 const express = require('express')
-const Expense = require('../Models/expense-model');
 const router = express.Router()
 
-const expenseController = require('../Controllers/expense-controller')
+const userController = require('../Controllers/user-controller')
 
-router.post('/user/login', expenseController.login) 
+router.post('/user/login', userController.login) 
 
 module.exports = router
