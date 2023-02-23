@@ -15,7 +15,7 @@ async function login(e){
         const response = await axios.post('http://localhost:5/user/login', userDetails)
 
         if(response.status === 200){
-            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data}</h2>`
+            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
 
             setTimeout(()=>{
                 document.body.removeChild(document.body.lastElementChild) 
@@ -24,7 +24,7 @@ async function login(e){
             window.location.href = "./expensetracker.html"
 
         } else {
-            throw new Error(response.data)
+            throw new Error(response.data.message)
         }
 
     } catch(err){

@@ -15,18 +15,19 @@ async function signup(e){
         }
     
         const response = await axios.post('http://localhost:5/user/signup', userDetails)
-        
-        document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
-
-        setTimeout(()=>{
-            document.body.removeChild(document.body.lastElementChild) 
-        }, 2000)
 
         if(response.status === 201){
+
+            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
+
+            setTimeout(()=>{
+                document.body.removeChild(document.body.lastElementChild) 
+            }, 2000)
+
             window.location.href = "./login.html"
         }
         else {
-            throw new Error(response.data)
+            throw new Error(response.data.message)
         }
 
     } catch(err){
