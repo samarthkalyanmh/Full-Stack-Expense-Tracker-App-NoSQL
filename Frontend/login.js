@@ -7,12 +7,12 @@ async function login(e){
         let password = document.getElementById('password').value
     
     
-        const userDetails = {
+        const loginDetails = {
             email,
             password
         }
     
-        const response = await axios.post('http://localhost:5/user/login', userDetails)
+        const response = await axios.post('http://localhost:5/user/login', loginDetails)
 
         if(response.status === 200){
             document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
@@ -20,7 +20,8 @@ async function login(e){
             setTimeout(()=>{
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
-
+            localStorage.setItem('token', response.data.token)
+            console.log(response.data.token)
             window.location.href = "./expensetracker.html"
 
         } else {

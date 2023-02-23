@@ -3,8 +3,11 @@ const Expense = require('../Models/expense-model');
 const getAllExpenses = async (req, res, next) => {
 
     try{
-        const allExpenses = await Expense.findAll()
+        // req.user.getExpenses() // You can also use this function provided by sequelize itself
+
+        const allExpenses = await Expense.findAll({ where: {userId: req.user.id}})
         res.status(201).json(allExpenses)
+
     } catch(err){
         res.status(500).send(err)
     }
@@ -18,10 +21,13 @@ const addExpense = async (req, res, next) => {
         const description = req.body.description
         const category = req.body.category
 
+        console.log('req.user is >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.user)
+
         const data = await Expense.create({
                                     amount: amount,
                                     description: description,
-                                    category: category
+                                    category: category,
+                                    UserId: req.user.id
                                 })
                                 .then()
                                 .catch()
@@ -37,7 +43,7 @@ const addExpense = async (req, res, next) => {
 const deleteExpense = async (req, res, next) => {
     try{
         const uid = req.params.id
-        await Expense.destroy({where: {id: uid}})
+        await Expense.destroy({where: {id: uid, UserId: req.user.id}})
         res.sendStatus(200)
 
     } catch(err){
