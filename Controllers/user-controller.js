@@ -1,9 +1,10 @@
-const User = require('../Models/userLogin-model');
+const User = require('../Models/user-model');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+require('dotenv').config
 
-function generateAccessToken(id, name){
-    return jwt.sign({userId: id, name: name}, 'secretkey')
+const generateAccessToken = (id, name) => {
+    return jwt.sign({userId: id, name: name}, process.env.SECRET_KEY)
 }
 
 const signup = async (req, res, next) => {
@@ -37,7 +38,6 @@ const signup = async (req, res, next) => {
 
 const login = async(req, res, next) => {
     try{ 
-
         const {email, password} = req.body
 
         if(!email || !password){
@@ -73,5 +73,6 @@ const login = async(req, res, next) => {
 
 module.exports = {
     signup,
-    login
+    login,
+    generateAccessToken
 }

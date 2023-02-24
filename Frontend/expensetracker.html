@@ -12,6 +12,11 @@
     </title>
 
     <body style="background-color: rgb(125, 117, 103);">
+
+      <div class="col-12 text-center mt-4" >
+        <button class="btn btn-primary float-" id="razorpay-button">Buy Premium</button>
+      </div>
+
         <section class="container my-20 bg-dark w-50 text-light p-2" style="margin-top:60px; padding-bottom: 200px; ">
             <form class="row g-3" onsubmit="saveExpenseToDatabase(event)">
 
@@ -52,8 +57,14 @@
               </div>
         </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-
 <script src="frontend.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<!-- Including axios library -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- Including razorpay library -->
+
+
 </body>
 </html>

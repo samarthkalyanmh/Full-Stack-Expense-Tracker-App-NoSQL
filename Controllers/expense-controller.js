@@ -1,5 +1,6 @@
 const Expense = require('../Models/expense-model');
 
+
 const getAllExpenses = async (req, res, next) => {
 
     try{
@@ -10,28 +11,24 @@ const getAllExpenses = async (req, res, next) => {
 
     } catch(err){
         res.status(500).send(err)
+        console.log('error is >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', err)
     }
 }
 
 const addExpense = async (req, res, next) => {
-
     try{
 
         const amount = req.body.amount
         const description = req.body.description
         const category = req.body.category
+        const UserId = req.user.id
 
         console.log('req.user is >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.user)
 
-        const data = await Expense.create({
-                                    amount: amount,
-                                    description: description,
-                                    category: category,
-                                    UserId: req.user.id
-                                })
-                                .then()
-                                .catch()
+        // Can use this magic function as well (Provided by sequelize)
+        // const data = await req.user.createExpense({ amount, description, category, UserId}) 
 
+        const data = await Expense.create({ amount, description, category, UserId})
         res.status(201).json(data)
         
     } catch(err) {

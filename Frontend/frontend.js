@@ -10,12 +10,14 @@ window.addEventListener('DOMContentLoaded', async () => {
                 showExpenseOnScreen(res.data[i])
             }
         })
-        .catch(err => {
-            console.log(err)
-        })
 
     } catch(err){
-        console.log(err)
+        console.log('Error is ', err)
+        document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:red; margin-top:30px;">${err}</h2>`
+
+            setTimeout(()=>{
+                document.body.removeChild(document.body.lastElementChild) 
+            }, 2000)
     }
 })
 
@@ -124,4 +126,44 @@ function editExpense(id){
     } catch(err){
         console.log(err)
     }
+}
+
+document.getElementById('razorpay-button').onclick = async (e) => {
+    try{
+        const token = localStorage.getItem('token')
+        const response = await axios.get('http://localhost:5/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
+        const order_id = response.data.order.id 
+
+        let options = {
+            "key": response.data.key_id, 
+            "order_id": response.data.order.id,
+    
+            //this handler will handle the success payment
+            "handler": async (res) => {
+                await axios.post('http://localhost:5/updateTransactionStatus', {
+                    order_id: options.order_id,
+                    payment_id: res.razorpay_payment_id //given by razorpay(res here is given by razorpay)
+                }, { headers: {'authorization': token }})
+    
+                alert('you are a premium user now')
+            }   
+        }
+    
+        const rzp = new Razorpay(options) 
+        rzp.open()
+        e.preventDefault()
+    
+        rzp.on('payment.failed', async (res) => {
+            console.log(res)
+
+            await axios.post('http://localhost:5/updateTransactionStatus/failed', {
+                order_id: order_id
+                }, { headers: {'authorization': token }})
+
+            alert('Payment Failed, Amount if debited will be refunded')
+        })
+
+    } catch(err){
+        console.log(err)
+    } 
 }
