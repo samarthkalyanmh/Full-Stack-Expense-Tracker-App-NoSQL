@@ -23,13 +23,12 @@ async function login(e){
             }, 2000)
 
             localStorage.setItem('token', response.data.token)
-
             localStorage.setItem('isPremiumUser', response.data.isPremiumUser)
 
             console.log(response.data.token)
             window.location.href = "./expensetracker.html"
 
-            if(localStorage.getItem('isPremiumUser')){
+            if(localStorage.getItem('isPremiumUser') != null && localStorage.getItem('isPremiumUser') == 'true'){
                 let premiumButton = document.getElementById('razorpay-button')
                 let parDiv = document.getElementById('razorpay-button').parentElement
                 parDiv.removeChild(premiumButton)

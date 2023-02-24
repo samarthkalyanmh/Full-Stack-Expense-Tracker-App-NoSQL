@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             }, 2000)
     }
 
-    if(localStorage.getItem('isPremiumUser')){
+    if(localStorage.getItem('isPremiumUser') != null && localStorage.getItem('isPremiumUser') == 'true'){
         let premiumButton = document.getElementById('razorpay-button')
         let parDiv = document.getElementById('razorpay-button').parentElement
         parDiv.removeChild(premiumButton)
@@ -163,7 +163,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
                 let p = document.createElement('p')
                 p.innerText = 'Kudos!!! You are a premium user now!'
                 parDiv.appendChild(p) 
-                localStorage.setItem('isPremiumUser', true)   
+                localStorage.setItem('isPremiumUser', 'true')   
             }   
         }
     
