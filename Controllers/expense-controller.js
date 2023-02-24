@@ -1,5 +1,5 @@
-const Expense = require('../Models/expense-model');
-
+const Expense = require('../Models/expense-model')
+const User = require('../Models/user-model')
 
 const getAllExpenses = async (req, res, next) => {
 
@@ -29,6 +29,10 @@ const addExpense = async (req, res, next) => {
         // Can use this magic function as well (Provided by sequelize)
         // const data = await req.user.createExpense({ amount, description, category, UserId}) 
         const data = await Expense.create({ amount, description, category, UserId})
+
+        const val = await User.findOne({ where: { id: UserId } })
+        await req.user.update({totalExpense: val.totalExpense + Number(amount)})
+
         res.status(201).json(data)
         
     } catch(err) {
@@ -36,10 +40,21 @@ const addExpense = async (req, res, next) => {
     }
 }
 
+
+//Should optimise below code
 const deleteExpense = async (req, res, next) => {
     try{
         const uid = req.params.id
+
+        const amountOfDeletedExpense = await Expense.findOne({where: {id: uid, UserId: req.user.id}})
+
         await Expense.destroy({where: {id: uid, UserId: req.user.id}})
+
+
+        const val = await User.findOne({ where: { id: req.user.id } })
+
+        await req.user.update({totalExpense: val.totalExpense - Number(amountOfDeletedExpense.amount)})
+
         res.sendStatus(200)
 
     } catch(err){
