@@ -11,7 +11,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         })
 
         const decodedToken = parseJwt(token)
-        console.log(decodedToken)
     
         if(decodedToken.isPremiumUser){
             showPremiumFeatures() 
@@ -188,18 +187,21 @@ function showPremiumFeatures(){
         showLeaderBoardInputButton.value = 'Show Leader Board'
 
         showLeaderBoardInputButton.onclick = async () => {
-            const token =localStorage.getItem('token')
+            const token = localStorage.getItem('token')
             const leaderBoardArray = await axios.get('http://localhost:5/premium/showleaderboard', {
                 headers: {'authorization': token}
             })
 
-            console.log(leaderBoardArray)
             
             let leaderBoardElement = document.getElementById('leader-board')
+            leaderBoardElement.innerHTML = ''
             leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
+
+            console.log(leaderBoardArray)
+
             leaderBoardArray.data.forEach(userDetails => {
-                leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}--Total Expense:${userDetails.total_cost}</li>`
-            });
+                leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}---Total Expense: ${userDetails.totalExpense || 0}</li>`
+            })
         }
 
         let parDiv = document.getElementById('message')

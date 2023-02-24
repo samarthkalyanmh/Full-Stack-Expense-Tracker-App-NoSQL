@@ -12,9 +12,9 @@ const authenticate = (req, res, next) => {
             req.user = user
             next()
         })
-
     } catch(err){
-        return res.status(401).json({ result: false, message: err})
+        console.log('error in user auth >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', err)
+        res.status(401).json({ result: false, message: err})
     }
 }
 

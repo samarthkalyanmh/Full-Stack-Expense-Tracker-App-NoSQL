@@ -17,23 +17,22 @@ const getAllExpenses = async (req, res, next) => {
 
 const addExpense = async (req, res, next) => {
     try{
-
         const amount = req.body.amount
         const description = req.body.description
         const category = req.body.category
         const UserId = req.user.id
 
-        console.log('req.user is >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.user)
+        if(amount === '' || !description || !category){
+            throw new Error("Bad Parameters")
+        }
 
         // Can use this magic function as well (Provided by sequelize)
         // const data = await req.user.createExpense({ amount, description, category, UserId}) 
-
         const data = await Expense.create({ amount, description, category, UserId})
         res.status(201).json(data)
         
     } catch(err) {
-        console.log('Error is ', err)
-        res.send(500).json(err)
+        res.status(500).json(err)
     }
 }
 
