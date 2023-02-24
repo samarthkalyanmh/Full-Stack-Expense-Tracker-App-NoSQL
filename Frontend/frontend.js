@@ -19,6 +19,17 @@ window.addEventListener('DOMContentLoaded', async () => {
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
     }
+
+    if(localStorage.getItem('isPremiumUser')){
+        let premiumButton = document.getElementById('razorpay-button')
+        let parDiv = document.getElementById('razorpay-button').parentElement
+        parDiv.removeChild(premiumButton)
+        let p = document.createElement('p')
+        p.innerText = 'Kudos!!! You are a premium user now!'
+        parDiv.appendChild(p) 
+    } else{
+        console.log('Not premium user')
+    }
 })
 
 async function saveExpenseToDatabase(e){
@@ -146,6 +157,13 @@ document.getElementById('razorpay-button').onclick = async (e) => {
                 }, { headers: {'authorization': token }})
     
                 alert('you are a premium user now')
+                let premiumButton = document.getElementById('razorpay-button')
+                let parDiv = document.getElementById('razorpay-button').parentElement
+                parDiv.removeChild(premiumButton)
+                let p = document.createElement('p')
+                p.innerText = 'Kudos!!! You are a premium user now!'
+                parDiv.appendChild(p) 
+                localStorage.setItem('isPremiumUser', true)   
             }   
         }
     

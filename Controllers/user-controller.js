@@ -58,7 +58,7 @@ const login = async(req, res, next) => {
                     throw new Error({message: "Something went wrong"})
                 }
                 if(result){
-                    return res.status(200).json({message: "login successful", token: generateAccessToken(userTryingToLogin[0].id, userTryingToLogin[0].name)})
+                    return res.status(200).json({message: "login successful", token: generateAccessToken(userTryingToLogin[0].id, userTryingToLogin[0].name), isPremiumUser: userTryingToLogin[0].isPremiumUser})
                 } else {
                     return res.status(400).json({message: "Incorrect password"})
                 }

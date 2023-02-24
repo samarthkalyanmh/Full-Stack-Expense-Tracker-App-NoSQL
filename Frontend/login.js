@@ -23,8 +23,20 @@ async function login(e){
             }, 2000)
 
             localStorage.setItem('token', response.data.token)
+
+            localStorage.setItem('isPremiumUser', response.data.isPremiumUser)
+
             console.log(response.data.token)
             window.location.href = "./expensetracker.html"
+
+            if(localStorage.getItem('isPremiumUser')){
+                let premiumButton = document.getElementById('razorpay-button')
+                let parDiv = document.getElementById('razorpay-button').parentElement
+                parDiv.removeChild(premiumButton)
+                let p = document.createElement('p')
+                p.innerText = 'Kudos!!! You are a premium user now!'
+                parDiv.appendChild(p) 
+            } 
 
         } else {
             throw new Error(response.data.message)
