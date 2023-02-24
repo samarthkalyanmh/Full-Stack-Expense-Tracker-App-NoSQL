@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config
 
-const generateAccessToken = (id, name) => {
-    return jwt.sign({userId: id, name: name}, process.env.SECRET_KEY)
+const generateAccessToken = (id, name, isPremiumUser) => {
+    return jwt.sign({userId: id, name: name, isPremiumUser}, process.env.SECRET_KEY)
 }
 
 const signup = async (req, res, next) => {
@@ -58,7 +58,7 @@ const login = async(req, res, next) => {
                     throw new Error({message: "Something went wrong"})
                 }
                 if(result){
-                    return res.status(200).json({message: "login successful", token: generateAccessToken(userTryingToLogin[0].id, userTryingToLogin[0].name), isPremiumUser: userTryingToLogin[0].isPremiumUser})
+                    return res.status(200).json({message: "login successful", token: generateAccessToken(userTryingToLogin[0].id, userTryingToLogin[0].name, userTryingToLogin[0].isPremiumUser), isPremiumUser: userTryingToLogin[0].isPremiumUser})
                 } else {
                     return res.status(400).json({message: "Incorrect password"})
                 }

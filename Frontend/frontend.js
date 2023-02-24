@@ -5,11 +5,19 @@ window.addEventListener('DOMContentLoaded', async () => {
             headers: {'authorization': token}
         })
         .then(res => {
-            console.log(res.data)
             for(let i=0; i<res.data.length; i++){
                 showExpenseOnScreen(res.data[i])
             }
         })
+
+        const decodedToken = parseJwt(token)
+        console.log(decodedToken)
+    
+        if(decodedToken.isPremiumUser){
+            showPremiumFeatures() 
+        } else{
+            console.log('Not premium user')
+        }
 
     } catch(err){
         console.log('Error is ', err)
@@ -18,17 +26,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             setTimeout(()=>{
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
-    }
-
-    if(localStorage.getItem('isPremiumUser') != null && localStorage.getItem('isPremiumUser') == 'true'){
-        let premiumButton = document.getElementById('razorpay-button')
-        let parDiv = document.getElementById('razorpay-button').parentElement
-        parDiv.removeChild(premiumButton)
-        let p = document.createElement('p')
-        p.innerText = 'Kudos!!! You are a premium user now!'
-        parDiv.appendChild(p) 
-    } else{
-        console.log('Not premium user')
     }
 })
 
@@ -48,7 +45,6 @@ async function saveExpenseToDatabase(e){
             category
 
         };
-        console.log(obj)
 
         await axios.post('http://localhost:5/add-expense', obj, {
             headers: {'authorization': token}
@@ -74,8 +70,7 @@ async function saveExpenseToDatabase(e){
 
 
 function showExpenseOnScreen(expense){
-    
-    console.log(expense)
+
     try{
         let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
         <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
@@ -151,19 +146,15 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     
             //this handler will handle the success payment
             "handler": async (res) => {
-                await axios.post('http://localhost:5/updateTransactionStatus', {
+                const backEndRes = await axios.post('http://localhost:5/updateTransactionStatus', {
                     order_id: options.order_id,
                     payment_id: res.razorpay_payment_id //given by razorpay(res here is given by razorpay)
                 }, { headers: {'authorization': token }})
     
                 alert('you are a premium user now')
-                let premiumButton = document.getElementById('razorpay-button')
-                let parDiv = document.getElementById('razorpay-button').parentElement
-                parDiv.removeChild(premiumButton)
-                let p = document.createElement('p')
-                p.innerText = 'Kudos!!! You are a premium user now!'
-                parDiv.appendChild(p) 
-                localStorage.setItem('isPremiumUser', 'true')   
+
+                showPremiumFeatures()  
+                localStorage.setItem('token', backEndRes.data.token)
             }   
         }
     
@@ -184,4 +175,47 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     } catch(err){
         console.log(err)
     } 
+}
+
+function showPremiumFeatures(){
+
+        document.getElementById('razorpay-button').style.visibility = 'hidden'
+        document.getElementById('message').innerHTML = 'Kudos!!! You are a premium user now!  '
+
+        let showLeaderBoardInputButton = document.createElement('input')
+        showLeaderBoardInputButton.type = 'button'
+        showLeaderBoardInputButton.id = 'show-leader-board-button'
+        showLeaderBoardInputButton.value = 'Show Leader Board'
+
+        showLeaderBoardInputButton.onclick = async () => {
+            const token =localStorage.getItem('token')
+            const leaderBoardArray = await axios.get('http://localhost:5/premium/showleaderboard', {
+                headers: {'authorization': token}
+            })
+
+            console.log(leaderBoardArray)
+            
+            let leaderBoardElement = document.getElementById('leader-board')
+            leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
+            leaderBoardArray.data.forEach(userDetails => {
+                leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}--Total Expense:${userDetails.total_cost}</li>`
+            });
+        }
+
+        let parDiv = document.getElementById('message')
+        parDiv.appendChild(showLeaderBoardInputButton)
+}
+
+function showLeaderBoard(){
+    console.log('show leader board button clicked')
+}
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
 }

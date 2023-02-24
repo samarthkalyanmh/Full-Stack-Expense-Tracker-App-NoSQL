@@ -23,18 +23,14 @@ async function login(e){
             }, 2000)
 
             localStorage.setItem('token', response.data.token)
-            localStorage.setItem('isPremiumUser', response.data.isPremiumUser)
+
+            const isPremiumUser = response.data.isPremiumUser
 
             console.log(response.data.token)
             window.location.href = "./expensetracker.html"
 
-            if(localStorage.getItem('isPremiumUser') != null && localStorage.getItem('isPremiumUser') == 'true'){
-                let premiumButton = document.getElementById('razorpay-button')
-                let parDiv = document.getElementById('razorpay-button').parentElement
-                parDiv.removeChild(premiumButton)
-                let p = document.createElement('p')
-                p.innerText = 'Kudos!!! You are a premium user now!'
-                parDiv.appendChild(p) 
+            if(isPremiumUser){
+                showPremiumFeatures()
             } 
 
         } else {
@@ -49,4 +45,34 @@ async function login(e){
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
     }
+}
+
+function showPremiumFeatures(){
+
+    document.getElementById('razorpay-button').style.visibility = 'hidden'
+    document.getElementById('message').innerHTML = 'Kudos!!! You are a premium user now!  '
+
+    let showLeaderBoardInputButton = document.createElement('input')
+    showLeaderBoardInputButton.type = 'button'
+    showLeaderBoardInputButton.id = 'show-leader-board-button'
+    showLeaderBoardInputButton.value = 'Show Leader Board'
+
+    showLeaderBoardInputButton.onclick = async () => {
+        // const token =localStorage.getItem('token')
+        // const leaderBoardArray = await axios.get('http://localhost:5/premium/showleaderboard', {
+        //     headers: {'authorization': token}
+        // })
+
+        // console.log(leaderBoardArray)
+        console.log('hi bud')
+
+        let leaderBoardElement = document.getElementById('leader-board')
+            leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
+            leaderBoardArray.data.forEach(userDetails => {
+                leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}--Total Expense:${userDetails.total_cost}</li>`
+            });
+    }
+
+    let parDiv = document.getElementById('message')
+    parDiv.appendChild(showLeaderBoardInputButton)
 }

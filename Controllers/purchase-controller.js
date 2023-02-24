@@ -37,16 +37,21 @@ const purchasePremium = async (req, res, next) => {
 const updateTransactionStatus = async (req, res, next) => {
 
     try {
-        const userId = req.user.id
-        const name = req.user.name
+        
+        
 
         const { payment_id, order_id} = req.body;
         const order  = await Order.findOne({where : {orderid : order_id}}) 
         const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'}) 
-        const promise2 =  req.user.update({ isPremiumUser: true }) 
+        const promise2 =  req.user.update({ isPremiumUser: true })
+
+        //These below declarations must be made here itself to get the updated isPremiumUser status, if we make it above we will get old value which was null
+        const userId = req.user.id
+        const name = req.user.name
+        const isPremiumUser = req.user.isPremiumUser 
 
         Promise.all([promise1, promise2]).then(()=> {
-            return res.status(202).json({sucess: true, message: "Transaction Successful", token: userController.generateAccessToken(userId, name) }); 
+            return res.status(202).json({sucess: true, message: "Transaction Successful", token: userController.generateAccessToken(userId, name, isPremiumUser) }) 
         }).catch((error ) => {
             throw new Error(error)
         })   

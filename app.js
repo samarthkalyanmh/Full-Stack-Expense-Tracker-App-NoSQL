@@ -15,19 +15,17 @@ app.use(cors())
 
 app.use(bodyParser.json({extended:false}))
 
-const getAllExpensesRoute = require('./Routes/getAllExpenses-route')
-const addExpenseRoute = require('./Routes/addExpense-route')
-const deleteExpenseRoute = require('./Routes/deleteExpense-route')
+const expenseRoute = require('./Routes/expense-route')
 const signupRoute = require('./Routes/signup-route')
 const loginroute = require('./Routes/login-route')
 const purchaseRoute = require('./Routes/purchase-route')
+const premiumRoute = require('./Routes/premium-route')
 
 app.use(signupRoute)
 app.use(loginroute)
 app.use(purchaseRoute)
-app.use(getAllExpensesRoute)
-app.use(addExpenseRoute)
-app.use(deleteExpenseRoute)
+app.use(expenseRoute)
+app.use(premiumRoute)
 
 
 User.hasMany(Expense)
