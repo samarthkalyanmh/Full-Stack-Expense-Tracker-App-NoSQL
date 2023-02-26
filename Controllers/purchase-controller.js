@@ -85,7 +85,7 @@ const updateTransactionStatusFailed = async (req, res, next) => {
 
         Promise.all([promise1, promise2]).then(async ()=> {
             await t.commit()
-            return res.status(403).json({result: false, message: "Transaction Failed machi", token: userController.generateAccessToken(userId, name) }); 
+            return res.status(403).json({result: false, message: "Transaction Failed machi", token: userController.generateAccessToken(userId, name) })
         }).catch(async (error ) => {
             await t.rollback()
             throw new Error(error)

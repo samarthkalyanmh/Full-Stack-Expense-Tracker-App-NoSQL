@@ -10,7 +10,7 @@ async function resetPassword(e){
     
         const response = await axios.post('http://localhost:5/password/forgotpassword', obj)
     
-        console.log(response.data.message)
+        console.log(response)
 
     } catch(err){
         console.log(err)

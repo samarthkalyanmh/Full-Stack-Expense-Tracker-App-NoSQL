@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const User = require('./Models/user-model')
 const Expense = require('./Models/expense-model')
 const Order = require('./Models/order-model')
+const ForgotPassword = require('./Models/forgot-password-model')
 
 
 const sequelize = require('./util/database');
@@ -35,6 +36,9 @@ Expense.belongsTo(User)
 
 User.hasMany(Order)
 Order.belongsTo(User)
+
+User.hasMany(ForgotPassword)
+ForgotPassword.belongsTo(User)
 
 sequelize.sync()
 .then(() => {
