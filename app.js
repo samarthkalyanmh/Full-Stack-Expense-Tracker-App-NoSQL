@@ -20,12 +20,14 @@ const signupRoute = require('./Routes/signup-route')
 const loginroute = require('./Routes/login-route')
 const purchaseRoute = require('./Routes/purchase-route')
 const premiumRoute = require('./Routes/premium-route')
+const passwordRoute = require('./Routes/password-route')
 
 app.use(signupRoute)
 app.use(loginroute)
 app.use(purchaseRoute)
 app.use(expenseRoute)
 app.use(premiumRoute)
+app.use(passwordRoute)
 
 
 User.hasMany(Expense)
