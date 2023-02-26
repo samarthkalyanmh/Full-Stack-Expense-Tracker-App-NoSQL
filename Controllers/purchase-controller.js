@@ -1,6 +1,7 @@
 const Razorpay = require('razorpay')
 const Order = require('../Models/order-model')
 const userController = require('./user-controller')
+const sequelize = require('../util/database')
 require('dotenv').config()
 
 
@@ -30,41 +31,46 @@ const purchasePremium = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(403).json({message:'something went wrong in razorpay order creation process', error: err})
+        res.status(500).json({message:'something went wrong in razorpay order creation process', error: err})
     }
 }
 
 const updateTransactionStatus = async (req, res, next) => {
 
+    const t = await sequelize.transaction()
     try {
         
-        
-
         const { payment_id, order_id} = req.body;
         const order  = await Order.findOne({where : {orderid : order_id}}) 
-        const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'}) 
-        const promise2 =  req.user.update({ isPremiumUser: true })
+        const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'}, { transaction: t }) 
+        const promise2 =  req.user.update({ isPremiumUser: true }, { transaction: t })
 
         //These below declarations must be made here itself to get the updated isPremiumUser status, if we make it above we will get old value which was null
         const userId = req.user.id
         const name = req.user.name
         const isPremiumUser = req.user.isPremiumUser 
 
-        Promise.all([promise1, promise2]).then(()=> {
+        Promise.all([promise1, promise2]).then(async ()=> {
+            await t.commit()
             return res.status(202).json({sucess: true, message: "Transaction Successful", token: userController.generateAccessToken(userId, name, isPremiumUser) }) 
-        }).catch((error ) => {
+        }).catch(async (error ) => {
+            await t.rollback()
             throw new Error(error)
         })   
                 
     } catch (err) {
-        console.log(err); 
-        res.status(403).json({ errpr: err, message: 'Something went wrong' })
+        console.log(err)
+        await t.rollback()
+        res.status(500).json({ error: err, message: 'Something went wrong' })
 
     }
 }
 
 //Not working yet
 const updateTransactionStatusFailed = async (req, res, next) => {
+
+    const t = await sequelize.transaction()
+
     try{
         const userId = req.user.id
         const name = req.user.name
@@ -74,17 +80,21 @@ const updateTransactionStatusFailed = async (req, res, next) => {
         const { order_id } = req.body
         const order  = await Order.findOne({where : {orderid : order_id}}) 
 
-        const promise1 =  order.update({ paymentid: 'FAILED', status: 'FAILED'}) 
-        const promise2 =  req.user.update({ isPremiumUser: false }) 
+        const promise1 =  order.update({ paymentid: 'FAILED', status: 'FAILED'}, { transaction: t }) 
+        const promise2 =  req.user.update({ isPremiumUser: false }, { transaction: t }) 
 
-        Promise.all([promise1, promise2]).then(()=> {
+        Promise.all([promise1, promise2]).then(async ()=> {
+            await t.commit()
             return res.status(403).json({result: false, message: "Transaction Failed machi", token: userController.generateAccessToken(userId, name) }); 
-        }).catch((error ) => {
+        }).catch(async (error ) => {
+            await t.rollback()
             throw new Error(error)
         }) 
 
     } catch(err){
+        await t.rollback()
         console.log(err)
+        res.status(500).json({ error: err, message: 'Something went wrong'})
     }
 }
 
