@@ -122,7 +122,7 @@ try{
             // await t.commit()    
         }
     } catch(err){
-        await t.rollback()
+        // await t.rollback()
         console.log(err)
     }
 
