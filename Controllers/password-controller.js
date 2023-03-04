@@ -56,25 +56,31 @@ const forgotPassword = async (req, res, next) => {
     }
 }
 
-const sendResetPasswordForm = async (req, res, next) => {
-    const uuid = req.params.uuid
-    const row = await ForgotPassword.findAll({where: {uuid: uuid}})
-    if(row && row[0].isactive){
-        res.status(200).send(`<html>
-                                <script>
-                                    function formsubmitted(e){
-                                        e.preventDefault();
-                                        console.log('called')
-                                    }
-                                </script>
-                                <form action="/password/updatepassword/${uuid}" method="GET">
-                                    <label for="newpassword">Enter New password</label>
-                                    <input name="newpassword" type="password" required></input>
-                                    <button>reset password</button>
-                                </form>
-                            </html>`)
-    }
 
+const sendResetPasswordForm = async (req, res, next) => {
+    try{
+        const uuid = req.params.uuid
+        const row = await ForgotPassword.findAll({where: {uuid: uuid}})
+        if(row && row[0].isactive){
+            res.status(200).send(`<html>
+                                    <script>
+                                        function formsubmitted(e){
+                                            e.preventDefault();
+                                            console.log('called')
+                                        }
+                                    </script>
+                                    <form action="/password/updatepassword/${uuid}" method="GET">
+                                        <label for="newpassword">Enter New password</label>
+                                        <input name="newpassword" type="password" required></input>
+                                        <button>reset password</button>
+                                    </form>
+                                </html>`)
+        }
+
+    } catch(err){
+        console.log(err)
+        res.status(500).json({message: "Link not working"})
+    }
 }
 
 //Unable to do this below using transaction. WHY???????????

@@ -11,4 +11,6 @@ router.delete('/delete-expense/:id', authenicateUser.authenticate, expenseContro
 
 router.get('/get-all-expenses', authenicateUser.authenticate, expenseController.getAllExpenses)
 
+router.get('/download-expense', authenicateUser.authenticate, expenseController.downloadExpense)
+
 module.exports = router

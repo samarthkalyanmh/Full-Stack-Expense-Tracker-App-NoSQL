@@ -221,3 +221,15 @@ function parseJwt (token) {
 
     return JSON.parse(jsonPayload);
 }
+
+document.getElementById('download-expenses-button').onclick = async (e) => {
+    try{
+        const token = localStorage.getItem('token')
+        const response = await axios.get('http://localhost:5/download-expense', {
+            headers: {'authorization': token}
+        })
+        console.log(response.data.message)
+    } catch(err){
+        console.log(err)
+    }
+}

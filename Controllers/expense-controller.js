@@ -1,6 +1,8 @@
 const Expense = require('../Models/expense-model')
 const User = require('../Models/user-model')
 const sequelize = require('../util/database')
+const AWS = require('aws-sdk')
+require('dotenv').config()
 
 const getAllExpenses = async (req, res, next) => {
 
@@ -78,8 +80,33 @@ const deleteExpense = async (req, res, next) => {
     }   
 }
 
+const downloadExpense = async (req, res, next) => {
+    
+    try{
+        const expenses = await req.user.getExpenses()
+        console.log(expenses)
+
+        const stringifiedExpenses = JSON.stringify(expenses)
+        const fileName = 'expenses.txt'
+        // const fileURL = uploadToS3(stringifiedExpenses, fileName)
+
+        // res.status(200).json({message: 'downloadExpense api backend response', fileURL})
+    } catch(err){
+        console.log(err)
+    }
+}
+
+function uploadToS3(data, fileName){
+    const BUCKET_NAME = process.env.BUCKET_NAME
+    const IAM_USER_ACCESS_KEY = process.env.IAM_USER_ACCESS_KEY
+    const IAM_USER_SECRET_KEY = process.env.IAM_USER_SECRET_KEY
+
+    
+}
+
 module.exports = {
     getAllExpenses,
     addExpense,
-    deleteExpense
+    deleteExpense,
+    downloadExpense
 }

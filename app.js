@@ -1,13 +1,14 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require('express')
+const bodyParser = require('body-parser')
+// app.use(express.static('Frontend'))
+require('dotenv').config()
 
 const User = require('./Models/user-model')
 const Expense = require('./Models/expense-model')
 const Order = require('./Models/order-model')
 const ForgotPassword = require('./Models/forgot-password-model')
 
-
-const sequelize = require('./util/database');
+const sequelize = require('./util/database')
 const cors = require('cors')
 
 const app = express()  

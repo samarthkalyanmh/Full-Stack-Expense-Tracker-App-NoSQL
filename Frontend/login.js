@@ -27,7 +27,7 @@ async function login(e){
             const isPremiumUser = response.data.isPremiumUser
 
             console.log(response.data.token)
-            window.location.href = "./expensetracker.html"
+            window.location.href = "./expensetracker-home.html"
 
             if(isPremiumUser){
                 showPremiumFeatures()
