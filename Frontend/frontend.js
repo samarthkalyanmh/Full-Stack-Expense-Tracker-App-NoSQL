@@ -228,7 +228,7 @@ document.getElementById('download-expenses-button').onclick = async (e) => {
         const response = await axios.get('http://localhost:5/download-expense', {
             headers: {'authorization': token}
         })
-        console.log(response.data.message)
+        console.log(response.data.fileURL)
     } catch(err){
         console.log(err)
     }

@@ -25,10 +25,18 @@ const signup = async (req, res, next) => {
 
         } else{
 
-            bcrypt.hash(password, 10, async (err, hash) => {
-                await User.create({ name, email, password: hash}) 
-                res.status(201).json({message: 'Successfully created new user'})
-            })
+            const salt = await bcrypt.genSalt(10)
+            const hashedPass = await bcrypt.hash(password, salt)
+
+
+            await User.create({ name, email, password: hashedPass}) 
+            res.status(201).json({message: 'Successfully created new user'})
+
+            //can use this below code too, but can't use transaction here
+            // bcrypt.hash(password, 10, async (err, hash) => {
+            //     await User.create({ name, email, password: hash}) 
+            //     res.status(201).json({message: 'Successfully created new user'})
+            // })
         }
 
     } catch(err){

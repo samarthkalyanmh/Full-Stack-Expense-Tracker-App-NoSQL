@@ -83,52 +83,29 @@ const sendResetPasswordForm = async (req, res, next) => {
     }
 }
 
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
-//Unable to do this below using transaction. WHY???????????
 
 const updatePassword = async (req, res, next) => {
 
-    // const t = await sequelize.transaction()
+    const t = await sequelize.transaction()
 
 try{   
         const uuid = req.params.uuid
         const row = await ForgotPassword.findAll({where: {uuid: uuid}})
         const newPassword = req.query.newpassword
 
-        
-
         if(row){
             const UserId = row[0].UserId
-            await ForgotPassword.update({isactive: false}, {where: {uuid: uuid}})
+            await ForgotPassword.update({isactive: false}, {where: {uuid: uuid}, transaction: t})
 
-            bcrypt.hash(newPassword, 10, async (err, hash) => {
-                if(err){
-                    console.log(err)
-                    throw new Error(err)
-                } else{
-                    await User.update({password: hash}, {where: {id: UserId}})
-                }
-                 
-            })
+            const salt = await bcrypt.genSalt(10)
+            const hashedPass = await bcrypt.hash(newPassword, salt)
 
-            // await User.update({password: newPassword}, {where: {id: UserId}, transaction: t}) 
-            // await t.commit()    
+            await User.update({password: hashedPass}, {where: {id: UserId}, transaction: t})
+
+            await t.commit()    
         }
     } catch(err){
-        // await t.rollback()
+        await t.rollback()
         console.log(err)
     }
 

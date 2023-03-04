@@ -88,9 +88,10 @@ const downloadExpense = async (req, res, next) => {
 
         const stringifiedExpenses = JSON.stringify(expenses)
         const fileName = 'expenses.txt'
-        // const fileURL = uploadToS3(stringifiedExpenses, fileName)
+        const fileURL = uploadToS3(stringifiedExpenses, fileName)
 
-        // res.status(200).json({message: 'downloadExpense api backend response', fileURL})
+        res.status(200).json({message: 'downloadExpense api backend response', fileURL: fileURL})
+
     } catch(err){
         console.log(err)
     }
@@ -101,6 +102,25 @@ function uploadToS3(data, fileName){
     const IAM_USER_ACCESS_KEY = process.env.IAM_USER_ACCESS_KEY
     const IAM_USER_SECRET_KEY = process.env.IAM_USER_SECRET_KEY
 
+    let s3bucket = new AWS.S3({
+        accessKeyId: IAM_USER_ACCESS_KEY,
+        secretAccessKey: IAM_USER_SECRET_KEY
+    })
+
+    s3bucket.createBucket(() => {
+        var params = {
+            Bucket: BUCKET_NAME,
+            Key: fileName,
+            Body: data,
+        }
+        s3bucket.upload(params, (err, s3response) => {
+            if(err){
+                console.log('Something went wrong', err)
+            } else{
+                console.log('success', s3response)
+            }
+        })
+    })
     
 }
 
