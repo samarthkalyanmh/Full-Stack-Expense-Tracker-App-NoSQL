@@ -7,4 +7,6 @@ const premiumController = require('../Controllers/premium-controller')
 
 router.get('/premium/showleaderboard', authenicateUser.authenticate, premiumController.showLeaderBoard)
 
+router.get('/get-old-downloads', authenicateUser.authenticate, premiumController.getOldDownloadData)
+
 module.exports = router

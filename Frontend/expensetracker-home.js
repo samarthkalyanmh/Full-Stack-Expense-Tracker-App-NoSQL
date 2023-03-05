@@ -247,3 +247,42 @@ document.getElementById('download-expenses-button').onclick = async (e) => {
         console.log(err)
     }
 }
+
+document.getElementById('show-old-downloads-button').onclick = async (e) => {
+    try{
+            const token = localStorage.getItem('token')
+
+            let previousDownloadsElement = document.getElementById('previous-downloads')
+            previousDownloadsElement.innerHTML = ''
+            previousDownloadsElement.innerHTML += '<h1>Previous Downloads</h1>'
+
+            const oldDownloads = await axios.get('http://localhost:5/get-old-downloads', {
+                headers: {'authorization': token}
+            })
+
+            if(oldDownloads.status == 200){
+
+                oldDownloads.data.forEach(element => {
+
+                    previousDownloadsElement.innerHTML += `<li>${element.fileName}<button onclick="downloadFile('${element.fileURL}')">Download</button></li>`
+
+                })
+
+
+                for(let i = 0; i<oldDownloads.data.length ;i++){
+
+                }
+            }
+
+    } catch(err){
+        console.log(err)
+    }
+}
+
+function downloadFile(fileURL){
+
+        let a = document.createElement('a')
+        a.href = fileURL
+        a.download = 'myexpense.csv'
+        a.click()
+}

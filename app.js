@@ -7,6 +7,7 @@ const User = require('./Models/user-model')
 const Expense = require('./Models/expense-model')
 const Order = require('./Models/order-model')
 const ForgotPassword = require('./Models/forgot-password-model')
+const FileURL = require('./Models/previous-downloads-fileURL-model')
 
 const sequelize = require('./util/database')
 const cors = require('cors')
@@ -41,10 +42,13 @@ Order.belongsTo(User)
 User.hasMany(ForgotPassword)
 ForgotPassword.belongsTo(User)
 
+User.hasMany(FileURL)
+FileURL.belongsTo(User)
+
 sequelize.sync()
 .then(() => {
     app.listen(5)
-})
+}) 
 .catch(err => {
     console.log(err)
 })
