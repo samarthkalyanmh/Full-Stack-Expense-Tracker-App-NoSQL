@@ -39,31 +39,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 })
 
-
-function showExpenseOnScreen(expense){
-
-    try{
-
-            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
-            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
-            <button onclick=editExpense(${expense.id})>Edit</button>
-            </li>`
-            let parDiv = document.getElementById('list')
-    
-            parDiv.innerHTML = parDiv.innerHTML + expenseLi
-        
-    }
-    catch(err){
-        console.log(err)
-    }
-}
-
-//Need to finalize
-function setCountInLocalStorage() {
-    localStorage.setItem("count", document.getElementById("NumberofRecords").value)
-    location.reload()
-}
-
 //Need to finalize
 async function getExpense(page) {
 
@@ -91,6 +66,23 @@ async function getExpense(page) {
     return dbData;
 }
 
+function showExpenseOnScreen(expense){
+    try{
+
+            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
+            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
+            <button onclick=editExpense(${expense.id})>Edit</button>
+            </li>`
+            let parDiv = document.getElementById('list')
+    
+            parDiv.innerHTML = parDiv.innerHTML + expenseLi
+        
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
 //Need to finalize
 async function showPagination({
     currentpage,
@@ -100,28 +92,21 @@ async function showPagination({
     haspreviouspage,
     lastpage
 }){
-
-
     const pagination = document.getElementById("pagination")
     pagination.innerHTML = ""
 
-    console.log(currentpage,
-        nextpage,
-        previouspage,
-        hasnextpage,
-        haspreviouspage,
-        lastpage)
-
+    //previous page code
     if(haspreviouspage) {
 
         const prevBtn = document.createElement('button')
 
-        prevBtn.innerHTML = `<a class="page-link">Previous page</a>`
+        prevBtn.innerHTML = `<a class="page-link">Previous</a>`
         prevBtn.addEventListener('click', async () => { await getExpense(previouspage) })
         pagination.appendChild(prevBtn)
         pagination.append(" ")
     }
 
+    //current page code
     if(currentpage == lastpage){
         
         const currbtn = document.createElement('button')
@@ -134,27 +119,27 @@ async function showPagination({
     } else{
         const currbtn = document.createElement('button')
    
-        currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
-        currbtn.addEventListener('click', () => {
-            if(currentpage == lastpage) {
-                getExpense(1)
-            }
-        })
+        currbtn.innerHTML =  `<a class="page-link" style="padding-bottom:20px; padding-top:20px">${currentpage}</a>`
+
         pagination.appendChild(currbtn)
         pagination.append(" ")
     }
-    
 
-    
-
+    //next page code
     if(hasnextpage) {
 
         const nextBtn = document.createElement('button');
       
-        nextBtn.innerHTML = `<a class="page-link">Next Page</a>`;
+        nextBtn.innerHTML = `<a class="page-link">Next</a>`;
         nextBtn.addEventListener('click', async () => { await getExpense(nextpage) })
         pagination.appendChild(nextBtn)
     }
+}
+
+//Need to finalize
+function setCountInLocalStorage() {
+    localStorage.setItem("count", document.getElementById("NumberofRecords").value)
+    location.reload()
 }
 
 async function saveExpenseToDatabase(e){
