@@ -1,8 +1,9 @@
 const Expense = require('../Models/expense-model')
 const User = require('../Models/user-model')
 const sequelize = require('../util/database')
-const AWS = require('aws-sdk')
 require('dotenv').config()
+const S3Services = require('../Services/S3-services')
+const UserServices = require('../Services/User-services')
 
 const getAllExpenses = async (req, res, next) => {
 
@@ -83,46 +84,32 @@ const deleteExpense = async (req, res, next) => {
 const downloadExpense = async (req, res, next) => {
     
     try{
-        const expenses = await req.user.getExpenses()
-        console.log(expenses)
+        // const expenses = await req.user.getExpenses()
+        const expenses = await UserServices.getExpenses(req)
 
-        const stringifiedExpenses = JSON.stringify(expenses)
-        const fileName = 'expenses.txt'
-        const fileURL = uploadToS3(stringifiedExpenses, fileName)
+        const UserId = req.user.id
 
-        res.status(200).json({message: 'downloadExpense api backend response', fileURL: fileURL})
+        const user = await User.findOne({where: {id: UserId}})
 
+        if(user.isPremiumUser){
+            const stringifiedExpenses = JSON.stringify(expenses)
+            const fileName = `expensesof${UserId}/${new Date()}.txt`
+            const fileURL = await S3Services.uploadToS3(stringifiedExpenses, fileName)
+            console.log('fileURL>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', fileURL)
+    
+            res.status(200).json({fileURL, message: 'response from backend' })
+        
+        } else{
+            res.status(401).json({message: 'unauthorized, not a premium user'})
+        }
+        
     } catch(err){
         console.log(err)
+        res.status(500).json(err)
     }
 }
 
-function uploadToS3(data, fileName){
-    const BUCKET_NAME = process.env.BUCKET_NAME
-    const IAM_USER_ACCESS_KEY = process.env.IAM_USER_ACCESS_KEY
-    const IAM_USER_SECRET_KEY = process.env.IAM_USER_SECRET_KEY
 
-    let s3bucket = new AWS.S3({
-        accessKeyId: IAM_USER_ACCESS_KEY,
-        secretAccessKey: IAM_USER_SECRET_KEY
-    })
-
-    s3bucket.createBucket(() => {
-        var params = {
-            Bucket: BUCKET_NAME,
-            Key: fileName,
-            Body: data,
-        }
-        s3bucket.upload(params, (err, s3response) => {
-            if(err){
-                console.log('Something went wrong', err)
-            } else{
-                console.log('success', s3response)
-            }
-        })
-    })
-    
-}
 
 module.exports = {
     getAllExpenses,

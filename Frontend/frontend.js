@@ -178,6 +178,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
 
 function showPremiumFeatures(){
 
+    try{
         document.getElementById('razorpay-button').style.visibility = 'hidden'
         document.getElementById('message').innerHTML = 'Kudos!!! You are a premium user now!  '
 
@@ -206,6 +207,11 @@ function showPremiumFeatures(){
 
         let parDiv = document.getElementById('message')
         parDiv.appendChild(showLeaderBoardInputButton)
+        
+    } catch(err){
+        console.log(err)
+    }
+        
 }
 
 function showLeaderBoard(){
@@ -228,7 +234,15 @@ document.getElementById('download-expenses-button').onclick = async (e) => {
         const response = await axios.get('http://localhost:5/download-expense', {
             headers: {'authorization': token}
         })
-        console.log(response.data.fileURL)
+
+        if(response.status == 200){
+
+            let a = document.createElement('a')
+            a.href = response.data.fileURL
+            a.download = 'myexpense.csv'
+            a.click()
+        }
+
     } catch(err){
         console.log(err)
     }
