@@ -64,10 +64,28 @@
                 <a href="./login.html"><button type="button" class="btn btn-primary">Login Page</button></a> 
               </div>
 
-              <h2 style="text-align:center; padding-bottom: 80px; text-decoration: underline; padding-top: 40px;">List of Expenses</h2>
+              <div style="text-align:center; padding-bottom: 80px;">
+              <h2 style="text-align:center; text-decoration: underline; padding-top: 40px;">List of Expenses</h2>
+              
+                  <select id="NumberofRecords" >
+                  <option value="none" selected disabled hidden>
+                      Select an Option </option>
+                  <option value="3">3</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                  </select> 
+                  <button class="btn btn-secondary" onclick="setCountInLocalStorage()">
+                      Get
+                  </button>
+            </div>
+              
               <div id="list">
 
               </div>
+              <div id="pagination"></div>
         </section>
         <div id="leader-board"></div>
         <div id="previous-downloads"></div>

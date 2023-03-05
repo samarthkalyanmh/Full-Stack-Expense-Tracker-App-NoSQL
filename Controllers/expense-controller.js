@@ -5,7 +5,7 @@ require('dotenv').config()
 const S3Services = require('../Services/S3-services')
 const UserServices = require('../Services/User-services')
 
-const getAllExpenses = async (req, res, next) => {
+/* const getAllExpenses = async (req, res, next) => {
 
     try{
         // req.user.getExpenses() // You can also use this function provided by sequelize itself
@@ -15,6 +15,50 @@ const getAllExpenses = async (req, res, next) => {
     } catch(err){
         console.log(err)
         res.status(500).json(err)    
+    }
+} */
+
+const getAllExpenses = async (req, res, next) => {
+    try {
+
+        // const PAGE = +req.query.page || 1
+        const PAGE = +req.query.page || 1
+    
+        const ITEMS_PER_PAGE = +req.query.count || 3
+
+        console.log("items per ppage",ITEMS_PER_PAGE)
+        console.log("this is my page num", PAGE)
+
+        const userId = req.user.id
+      
+        const count = await Expense.count({where : {UserId : userId}})
+
+        await Expense.findAll({
+    
+            offset :(PAGE - 1)*ITEMS_PER_PAGE,
+            limit : ITEMS_PER_PAGE,
+            where : { UserId : userId}
+
+        }).then((rows)=>{
+
+            console.log('PAGE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', PAGE)
+
+            res.json({
+                rows : rows,
+                currentpage : PAGE,
+                hasnextpage : ITEMS_PER_PAGE * PAGE < count,
+                nextpage : PAGE + 1,
+                haspreviouspage : PAGE > 1,
+                previouspage : PAGE -1,
+                lastpage : Math.ceil(count/ITEMS_PER_PAGE)
+    
+            })
+            return rows.data
+        }).catch(err => console.log(err))
+        // console.log(JSON.stringify(pageData))
+
+    } catch(err){
+        console.log(err); console.log("error at get expense")
     }
 }
 

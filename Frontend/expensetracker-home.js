@@ -1,22 +1,33 @@
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const token = localStorage.getItem('token')
-        await axios.get('http://localhost:5/get-all-expenses', {
-            headers: {'authorization': token}
-        })
-        .then(res => {
-            for(let i=0; i<res.data.length; i++){
-                showExpenseOnScreen(res.data[i])
-            }
-        })
 
-        const decodedToken = parseJwt(token)
-    
-        if(decodedToken.isPremiumUser){
-            showPremiumFeatures() 
-        } else{
-            console.log('Not premium user')
-        }
+        const token = localStorage.getItem('token')
+
+        if(token != null){
+
+                // await axios.get('http://localhost:5/get-all-expenses', {
+                //     headers: {'authorization': token}
+                // })
+                // .then(res => {
+                //     for(let i=0; i<res.data.length; i++){
+                //         showExpenseOnScreen(res.data[i])
+                //     }
+                // })
+        
+                const decodedToken = parseJwt(token)
+            
+                if(decodedToken.isPremiumUser){
+                    showPremiumFeatures() 
+                } else{
+                    console.log('Not premium user')
+                }
+
+        const page = 1
+        getExpense(page)
+
+        } else {
+            window.location.href = "./login.html"
+        }  
 
     } catch(err){
         console.log('Error is ', err)
@@ -27,6 +38,107 @@ window.addEventListener('DOMContentLoaded', async () => {
             }, 2000)
     }
 })
+
+
+function showExpenseOnScreen(expense){
+
+    try{
+
+            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
+            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
+            <button onclick=editExpense(${expense.id})>Edit</button>
+            </li>`
+            let parDiv = document.getElementById('list')
+    
+            parDiv.innerHTML = parDiv.innerHTML + expenseLi
+        
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+//Need to finalize
+function setCountInLocalStorage() {
+    localStorage.setItem("count", document.getElementById("NumberofRecords").value)
+    location.reload()
+}
+
+//Need to finalize
+async function getExpense(page) {
+
+    const count = localStorage.getItem("count")
+
+    document.getElementById("list").innerHTML = ""
+
+    const token = localStorage.getItem('token')
+
+    const dbData = await axios.get(`http://localhost:5/get-all-expenses?page=${page}&count=${count}`, {
+        headers: {'authorization': token}
+    })
+
+        .then(response => { 
+            console.log('response.data', response.data)
+
+            response.data.rows.forEach( element => {
+                showExpenseOnScreen(element)
+            })
+            // sendToUi(response.data.rows) 
+            // console.log(response.data)
+            showPagination(response.data) 
+        })
+        .catch(err => console.log(err))
+
+    return dbData;
+}
+
+//Need to finalize
+async function showPagination({
+    currentpage,
+    nextpage,
+    previouspage,
+    hasnextpage,
+    haspreviouspage,
+    lastpage
+}){
+
+
+    const pagination = document.getElementById("pagination")
+    pagination.innerHTML = ""
+
+    // console.log('currentPage', currentPage)
+
+    if(haspreviouspage) {
+
+        const prevBtn = document.createElement('button')
+
+        prevBtn.innerHTML = `<a class="page-link">Previous page</a>`
+        prevBtn.addEventListener('click', async () => { await getExpense(previouspage) })
+        pagination.appendChild(prevBtn)
+        pagination.append(" ")
+    }
+
+    const currbtn = document.createElement('button')
+   
+    currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
+    currbtn.addEventListener('click', () => {
+        if(currentpage == lastpage) {
+            getExpense(1)
+        }
+    })
+
+    pagination.appendChild(currbtn)
+    pagination.append(" ")
+
+    if(hasnextpage) {
+
+        const nextBtn = document.createElement('button');
+      
+        nextBtn.innerHTML = `<a class="page-link">Next Page</a>`;
+        nextBtn.addEventListener('click', async () => { await getExpense(nextpage) })
+        pagination.appendChild(nextBtn)
+    }
+}
 
 async function saveExpenseToDatabase(e){
     e.preventDefault()
@@ -42,8 +154,7 @@ async function saveExpenseToDatabase(e){
             amount,
             description,
             category
-
-        };
+        }
 
         await axios.post('http://localhost:5/add-expense', obj, {
             headers: {'authorization': token}
@@ -65,23 +176,6 @@ async function saveExpenseToDatabase(e){
     }
     
 
-}
-
-
-function showExpenseOnScreen(expense){
-
-    try{
-        let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
-        <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
-        <button onclick=editExpense(${expense.id})>Edit</button>
-        </li>`
-        let parDiv = document.getElementById('list')
-
-        parDiv.innerHTML = parDiv.innerHTML + expenseLi
-    }
-    catch(err){
-        console.log(err)
-    }
 }
 
 async function deleteExpense(id){
@@ -267,11 +361,6 @@ document.getElementById('show-old-downloads-button').onclick = async (e) => {
                     previousDownloadsElement.innerHTML += `<li>${element.fileName}<button onclick="downloadFile('${element.fileURL}')">Download</button></li>`
 
                 })
-
-
-                for(let i = 0; i<oldDownloads.data.length ;i++){
-
-                }
             }
 
     } catch(err){
