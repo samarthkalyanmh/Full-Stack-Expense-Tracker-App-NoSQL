@@ -78,7 +78,6 @@ async function getExpense(page) {
     })
 
         .then(response => { 
-            console.log('response.data', response.data)
 
             response.data.rows.forEach( element => {
                 showExpenseOnScreen(element)
@@ -106,7 +105,12 @@ async function showPagination({
     const pagination = document.getElementById("pagination")
     pagination.innerHTML = ""
 
-    // console.log('currentPage', currentPage)
+    console.log(currentpage,
+        nextpage,
+        previouspage,
+        hasnextpage,
+        haspreviouspage,
+        lastpage)
 
     if(haspreviouspage) {
 
@@ -118,17 +122,30 @@ async function showPagination({
         pagination.append(" ")
     }
 
-    const currbtn = document.createElement('button')
+    if(currentpage == lastpage){
+        
+        const currbtn = document.createElement('button')
    
-    currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
-    currbtn.addEventListener('click', () => {
-        if(currentpage == lastpage) {
-            getExpense(1)
-        }
-    })
+        currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
 
-    pagination.appendChild(currbtn)
-    pagination.append(" ")
+        pagination.appendChild(currbtn)
+        pagination.append(" ")
+
+    } else{
+        const currbtn = document.createElement('button')
+   
+        currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
+        currbtn.addEventListener('click', () => {
+            if(currentpage == lastpage) {
+                getExpense(1)
+            }
+        })
+        pagination.appendChild(currbtn)
+        pagination.append(" ")
+    }
+    
+
+    
 
     if(hasnextpage) {
 

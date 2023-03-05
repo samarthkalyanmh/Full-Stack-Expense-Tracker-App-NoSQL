@@ -41,8 +41,6 @@ const getAllExpenses = async (req, res, next) => {
 
         }).then((rows)=>{
 
-            console.log('PAGE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', PAGE)
-
             res.json({
                 rows : rows,
                 currentpage : PAGE,
