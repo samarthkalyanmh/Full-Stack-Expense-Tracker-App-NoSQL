@@ -9,7 +9,8 @@ async function resetPassword(e){
         }
     
         const response = await axios.post('http://localhost:5/password/forgotpassword', obj)
-    
+        
+        document.body.innerHTML += `<h1 style="text-align:center; color:yellow;">Check your Email for Reset password link</h1>`
         console.log(response)
 
     } catch(err){

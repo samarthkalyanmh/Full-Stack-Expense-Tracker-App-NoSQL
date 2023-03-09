@@ -20,14 +20,9 @@ const UserServices = require('../Services/User-services')
 
 const getAllExpenses = async (req, res, next) => {
     try {
-
-        // const PAGE = +req.query.page || 1
+        //writing + here before req.query.page helps convert string to number
         const PAGE = +req.query.page || 1
-    
         const ITEMS_PER_PAGE = +req.query.count || 3
-
-        console.log("items per ppage",ITEMS_PER_PAGE)
-        console.log("this is my page num", PAGE)
 
         const userId = req.user.id
       

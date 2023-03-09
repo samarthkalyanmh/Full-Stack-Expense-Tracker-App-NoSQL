@@ -2,6 +2,11 @@ const express = require('express')
 const bodyParser = require('body-parser')
 // app.use(express.static('Frontend'))
 require('dotenv').config()
+const path = require('path')
+
+const morgan = require('morgan')
+const fs = require('fs')
+// const helmet = require('helmet')
 
 const User = require('./Models/user-model')
 const Expense = require('./Models/expense-model')
@@ -12,9 +17,17 @@ const FileURL = require('./Models/previous-downloads-fileURL-model')
 const sequelize = require('./util/database')
 const cors = require('cors')
 
-const app = express()  
+const app = express()
+
+//setting secure headers for responses 
+// app.use(helmet())
 
 app.use(cors())
+
+const accessLogStream =  fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+
+
+app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(bodyParser.json({extended:false}))
 

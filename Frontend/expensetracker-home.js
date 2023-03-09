@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         const token = localStorage.getItem('token')
 
-        if(token != null){
+        if(token != null){  
 
                 // await axios.get('http://localhost:5/get-all-expenses', {
                 //     headers: {'authorization': token}
@@ -66,23 +66,6 @@ async function getExpense(page) {
     return dbData;
 }
 
-function showExpenseOnScreen(expense){
-    try{
-
-            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
-            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
-            <button onclick=editExpense(${expense.id})>Edit</button>
-            </li>`
-            let parDiv = document.getElementById('list')
-    
-            parDiv.innerHTML = parDiv.innerHTML + expenseLi
-        
-    }
-    catch(err){
-        console.log(err)
-    }
-}
-
 //Need to finalize
 async function showPagination({
     currentpage,
@@ -92,6 +75,7 @@ async function showPagination({
     haspreviouspage,
     lastpage
 }){
+    
     const pagination = document.getElementById("pagination")
     pagination.innerHTML = ""
 
@@ -111,7 +95,7 @@ async function showPagination({
         
         const currbtn = document.createElement('button')
    
-        currbtn.innerHTML =  `<a class="page-link">${currentpage}</a>`
+        currbtn.innerHTML =  `<a class="page-link" style="padding-bottom:20px; padding-top:20px">${currentpage}</a>`
 
         pagination.appendChild(currbtn)
         pagination.append(" ")
@@ -140,6 +124,23 @@ async function showPagination({
 function setCountInLocalStorage() {
     localStorage.setItem("count", document.getElementById("NumberofRecords").value)
     location.reload()
+}
+
+function showExpenseOnScreen(expense){
+    try{
+
+            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
+            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
+            <button onclick=editExpense(${expense.id})>Edit</button>
+            </li>`
+            let parDiv = document.getElementById('list')
+    
+            parDiv.innerHTML = parDiv.innerHTML + expenseLi
+        
+    }
+    catch(err){
+        console.log(err)
+    }
 }
 
 async function saveExpenseToDatabase(e){
