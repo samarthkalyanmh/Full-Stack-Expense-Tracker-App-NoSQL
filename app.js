@@ -60,7 +60,7 @@ FileURL.belongsTo(User)
 
 sequelize.sync()
 .then(() => {
-    app.listen(5)
+    app.listen(3000)
 }) 
 .catch(err => {
     console.log(err)
