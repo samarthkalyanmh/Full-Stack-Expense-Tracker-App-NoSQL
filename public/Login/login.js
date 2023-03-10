@@ -12,7 +12,7 @@ async function login(e){
             password
         }
     
-        const response = await axios.post('http://localhost:5/user/login', loginDetails)
+        const response = await axios.post('http://54.167.151.207:3000/user/login', loginDetails)
 
         if(response.status === 200){
             
@@ -27,7 +27,7 @@ async function login(e){
             const isPremiumUser = response.data.isPremiumUser
 
             console.log(response.data.token)
-            window.location.href = "./expensetracker-home.html"
+            window.location.href = "../Home/expensetracker-home.html"
 
             if(isPremiumUser){
                 showPremiumFeatures()
@@ -59,7 +59,7 @@ function showPremiumFeatures(){
 
     showLeaderBoardInputButton.onclick = async () => {
         // const token =localStorage.getItem('token')
-        // const leaderBoardArray = await axios.get('http://localhost:5/premium/showleaderboard', {
+        // const leaderBoardArray = await axios.get('http://54.167.151.207:3000/premium/showleaderboard', {
         //     headers: {'authorization': token}
         // })
 

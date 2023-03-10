@@ -35,7 +35,7 @@ const forgotPassword = async (req, res, next) => {
         sendSmtpEmail.subject = "Reset-Password"
         sendSmtpEmail.textContent = "Hey Click below to reset Your Password"
 
-        sendSmtpEmail.htmlContent = `<form onsubmit="submitPass(event)" ><a href="http://localhost:5/password/resetpassword/${uuidx}">Reset Password</a></form>`
+        sendSmtpEmail.htmlContent = `<form onsubmit="submitPass(event)" ><a href="http://54.167.151.207:3000/password/resetpassword/${uuidx}">Reset Password</a></form>`
 
         // console.log(sendSmtpEmail.htmlContent)
 
