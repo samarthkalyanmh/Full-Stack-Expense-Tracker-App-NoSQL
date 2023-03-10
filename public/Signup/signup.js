@@ -14,7 +14,7 @@ async function signup(e){
             password
         }
     
-        const response = await axios.post('http://localhost:5/user/signup', userDetails)
+        const response = await axios.post('http://54.167.151.207:3000/user/signup', userDetails)
 
         if(response.status === 201){
 
@@ -24,7 +24,7 @@ async function signup(e){
                 document.body.removeChild(document.body.lastElementChild) 
             }, 2000)
 
-            window.location.href = "./login.html"
+            window.location.href = "../Login/login.html"
         }
         else {
             throw new Error(response.data.message)

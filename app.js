@@ -45,6 +45,11 @@ app.use(expenseRoute)
 app.use(premiumRoute)
 app.use(passwordRoute)
 
+app.use((req, res) => {
+
+    res.sendFile(path.join(__dirname, `public/${req.url}`))
+})
+
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
@@ -60,7 +65,7 @@ FileURL.belongsTo(User)
 
 sequelize.sync()
 .then(() => {
-    app.listen(5)
+    app.listen(3000)
 }) 
 .catch(err => {
     console.log(err)
