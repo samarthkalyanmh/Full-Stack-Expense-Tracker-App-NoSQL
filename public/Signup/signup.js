@@ -14,27 +14,34 @@ async function signup(e){
             password
         }
     
-        const response = await axios.post('http://34.194.245.165/user/signup', userDetails)
+        const response = await axios.post('http://localhost:3000/user/signup', userDetails)
 
         if(response.status === 201){
 
-            document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:green; margin-top:30px;">${response.data.message}</h2>`
-
-            setTimeout(()=>{
-                document.body.removeChild(document.body.lastElementChild) 
-            }, 2000)
-
-            window.location.href = "../Login/login.html"
+            displayMessage(response.data.message, true)
+            setTimeout(() => {
+                window.location.href = "../Login/login.html"
+            }, 1000)
         }
         else {
             throw new Error(response.data.message)
         }
 
-    } catch(err){
-        console.log(err)      
-        document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:red; margin-top:30px;">${err}</h2>`
-        setTimeout(()=>{
-            document.body.removeChild(document.body.lastElementChild) 
-        }, 3000)
+    } catch(errMessage){
+        console.log(errMessage)  
+        displayMessage(errMessage, false)
     }
+}
+
+function displayMessage(msg, successOrFailure){
+
+    const errorDiv = document.getElementById('message')
+
+        errorDiv.innerHTML = ''
+
+    if(successOrFailure){
+        errorDiv.innerHTML +=  `<h2 style="text-align:center; color:green; margin-top:30px;">${msg}</h2>`
+    } else{
+        errorDiv.innerHTML +=  `<h2 style="text-align:center; color:red; margin-top:30px;">${msg}</h2>`
+    }       
 }

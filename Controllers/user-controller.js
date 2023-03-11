@@ -40,7 +40,8 @@ const signup = async (req, res, next) => {
         }
 
     } catch(err){
-        res.status(500).json(err)
+        console.log(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 
@@ -50,13 +51,13 @@ const login = async(req, res, next) => {
 
         console.log('entering login function')
         if(!email || !password){
-            return res.status(400).json("bad parameters")
+            return res.status(400).json({message: "bad parameters"})
         }
 
         const userTryingToLogin = await User.findAll({where: {email: email}})
 
         if(userTryingToLogin.length === 0){
-           return res.status(404).json("user doesn't exist")
+           return res.status(404).json({message: "User doesn't exist"})
 
         } else{
 
@@ -74,7 +75,7 @@ const login = async(req, res, next) => {
         
     } catch(err){
         console.log('err is ', err)
-        res.status(500).json(err)
+        res.status(500).json({err, message:'Internal server error 500'})
     }
 }
 

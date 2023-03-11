@@ -12,26 +12,31 @@ const purchasePremium = async (req, res, next) => {
             key_id: process.env.RAZORPAY_KEY_ID, 
             key_secret: process.env.RAZORPAY_KEY_SECRET 
         })
-        const amount = 4500000
+
+
+        const amount = 45000
         
         //Creating order in razorpay
         rzp.orders.create({amount, currency: 'INR'}, (err, order) => {
             if(err){
-                throw new Error(JSON.stringify(err))
+                // throw new Error(JSON.stringify(err))
+                return res.status(500).json(err, {message: 'something went wrong in razorpay order creation process'}) 
             }
+
             //saving order details in DataBase
-            req.user.createOrder({orderid: order.id, status:'PENDING'})
+            req.user.createOrder({orderid: order.id, status:'PENDING'}) 
             .then(() => {
                 return res.status(201).json({order, key_id: rzp.key_id})
             })
             .catch(err => {
-                throw new Error(err)
+                console.log(err)
+                res.status(500).json(err, {message: 'something went wrong in razorpay order creation process'})
             })
         })  
 
     } catch(err){   
         console.log('Error in purchasePremium', err)
-        res.status(500).json({message:'something went wrong in razorpay order creation process', error: err})
+        res.status(500).json(err, {message: 'something went wrong in razorpay order creation process'})
     }
 }
 
@@ -59,10 +64,10 @@ const updateTransactionStatus = async (req, res, next) => {
         })   
                 
     } catch (err) {
-        console.log('Error in updateTransactionStatus', err)
         await t.rollback()
-        res.status(500).json({ error: err, message: 'Something went wrong' })
 
+        console.log('Error in updateTransactionStatus', err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 

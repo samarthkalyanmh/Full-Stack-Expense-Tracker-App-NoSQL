@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         if(token != null){  
 
-                // await axios.get('http://34.194.245.165/get-all-expenses', {
+                // await axios.get('http://localhost:3000/get-all-expenses', {
                 //     headers: {'authorization': token}
                 // })
                 // .then(res => {
@@ -18,8 +18,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             
                 if(decodedToken.isPremiumUser){
                     showPremiumFeatures() 
-                } else{
-                    console.log('Not premium user')
                 }
 
         const page = 1
@@ -30,12 +28,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         }  
 
     } catch(err){
-        console.log('Error is ', err)
-        document.body.innerHTML = document.body.innerHTML + `<h2 style="text-align:center; color:red; margin-top:30px;">${err}</h2>`
-
-            setTimeout(()=>{
-                document.body.removeChild(document.body.lastElementChild) 
-            }, 2000)
+        console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
 })
 
@@ -48,7 +42,7 @@ async function getExpense(page) {
 
     const token = localStorage.getItem('token')
 
-    const dbData = await axios.get(`http://34.194.245.165/get-all-expenses?page=${page}&count=${count}`, {
+    const dbData = await axios.get(`http://localhost:3000/get-all-expenses?page=${page}&count=${count}`, {
         headers: {'authorization': token}
     })
 
@@ -61,7 +55,7 @@ async function getExpense(page) {
             // console.log(response.data)
             showPagination(response.data) 
         })
-        .catch(err => console.log(err))
+
 
     return dbData;
 }
@@ -140,6 +134,7 @@ function showExpenseOnScreen(expense){
     }
     catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
 }
 
@@ -159,23 +154,20 @@ async function saveExpenseToDatabase(e){
             category
         }
 
-        await axios.post('http://34.194.245.165/add-expense', obj, {
+        const response = await axios.post('http://localhost:3000/add-expense', obj, {
             headers: {'authorization': token}
         })
-        .then(res => {
 
-            showExpenseOnScreen(res.data)
+        showExpenseOnScreen(response.data)
 
-            document.getElementById('amount').value = ''
-            document.getElementById('description').value = ''
-            
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        document.getElementById('amount').value = ''
+        document.getElementById('description').value = ''
+
+        
 
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
     
 
@@ -186,18 +178,16 @@ async function deleteExpense(id){
     try{
         const token = localStorage.getItem('token')
 
-        await axios.delete(`http://34.194.245.165/delete-expense/${id}`, {
+        await axios.delete(`http://localhost:3000/delete-expense/${id}`, {
             headers: {'authorization': token}
         })
-        .then(res => {
-            removeExpenseFromUi(id)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+
+        removeExpenseFromUi(id)
+        
 
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
     
 }
@@ -210,6 +200,7 @@ function removeExpenseFromUi(id){
 
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
     
 }
@@ -227,14 +218,18 @@ function editExpense(id){
 
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
 }
 
 document.getElementById('razorpay-button').onclick = async (e) => {
     try{
+        // console.log('pressed button')
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://34.194.245.165/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
+        const response = await axios.get('http://localhost:3000/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
         const order_id = response.data.order.id 
+
+        console.log(response)
 
         let options = {
             "key": response.data.key_id, 
@@ -242,7 +237,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     
             //this handler will handle the success payment
             "handler": async (res) => {
-                const backEndRes = await axios.post('http://34.194.245.165/updateTransactionStatus', {
+                const backEndRes = await axios.post('http://localhost:3000/updateTransactionStatus', {
                     order_id: options.order_id,
                     payment_id: res.razorpay_payment_id //given by razorpay(res here is given by razorpay)
                 }, { headers: {'authorization': token }})
@@ -261,7 +256,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
         rzp.on('payment.failed', async (res) => {
             console.log(res)
 
-            await axios.post('http://34.194.245.165/updateTransactionStatus/failed', {
+            await axios.post('http://localhost:3000/updateTransactionStatus/failed', {
                 order_id: order_id
                 }, { headers: {'authorization': token }})
 
@@ -270,6 +265,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
 
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     } 
 }
 
@@ -277,7 +273,7 @@ function showPremiumFeatures(){
 
     try{
         document.getElementById('razorpay-button').style.visibility = 'hidden'
-        document.getElementById('message').innerHTML = 'Kudos!!! You are a premium user now!  '
+        document.getElementById('premium-message').innerHTML = 'Kudos!!! You are a premium user now!  '
 
         let showLeaderBoardInputButton = document.createElement('input')
         showLeaderBoardInputButton.type = 'button'
@@ -286,7 +282,7 @@ function showPremiumFeatures(){
 
         showLeaderBoardInputButton.onclick = async () => {
             const token = localStorage.getItem('token')
-            const leaderBoardArray = await axios.get('http://34.194.245.165/premium/showleaderboard', {
+            const leaderBoardArray = await axios.get('http://localhost:3000/premium/showleaderboard', {
                 headers: {'authorization': token}
             })
 
@@ -295,18 +291,17 @@ function showPremiumFeatures(){
             leaderBoardElement.innerHTML = ''
             leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
 
-            console.log(leaderBoardArray)
-
             leaderBoardArray.data.forEach(userDetails => {
                 leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}---Total Expense: ${userDetails.totalExpense || 0}</li>`
             })
         }
 
-        let parDiv = document.getElementById('message')
+        let parDiv = document.getElementById('premium-message')
         parDiv.appendChild(showLeaderBoardInputButton)
         
     } catch(err){
         console.log(err)
+        displayMessage(JSON.stringify(err), false)
     }
         
 }
@@ -328,7 +323,7 @@ function parseJwt (token) {
 document.getElementById('download-expenses-button').onclick = async (e) => {
     try{
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://34.194.245.165/download-expense', {
+        const response = await axios.get('http://localhost:3000/download-expense', {
             headers: {'authorization': token}
         })
 
@@ -338,10 +333,13 @@ document.getElementById('download-expenses-button').onclick = async (e) => {
             a.href = response.data.fileURL
             a.download = 'myexpense.csv'
             a.click()
+        } else{
+            throw new Error(response.data.message)
         }
 
-    } catch(err){
-        console.log(err)
+    } catch(errMsg){
+        console.log(errMsg)
+        displayMessage('Not a premium user', false)
     }
 }
 
@@ -349,25 +347,28 @@ document.getElementById('show-old-downloads-button').onclick = async (e) => {
     try{
             const token = localStorage.getItem('token')
 
-            let previousDownloadsElement = document.getElementById('previous-downloads')
-            previousDownloadsElement.innerHTML = ''
-            previousDownloadsElement.innerHTML += '<h1>Previous Downloads</h1>'
-
-            const oldDownloads = await axios.get('http://34.194.245.165/get-old-downloads', {
+            const oldDownloads = await axios.get('http://localhost:3000/get-old-downloads', {
                 headers: {'authorization': token}
             })
 
             if(oldDownloads.status == 200){
+
+                let previousDownloadsElement = document.getElementById('previous-downloads')
+                previousDownloadsElement.innerHTML = ''
+                previousDownloadsElement.innerHTML += '<h1>Previous Downloads</h1>'
 
                 oldDownloads.data.forEach(element => {
 
                     previousDownloadsElement.innerHTML += `<li>${element.fileName}<button onclick="downloadFile('${element.fileURL}')">Download</button></li>`
 
                 })
+            } else{
+                throw new Error(oldDownloads.data.message)
             }
 
-    } catch(err){
-        console.log(err)
+    } catch(errMsg){
+        console.log(errMsg)
+        displayMessage(errMsg, false)
     }
 }
 
@@ -377,4 +378,17 @@ function downloadFile(fileURL){
         a.href = fileURL
         a.download = 'myexpense.csv'
         a.click()
+}
+
+function displayMessage(msg, successOrFailure){
+
+    const errorDiv = document.getElementById('message')
+
+        errorDiv.innerHTML = ''
+
+    if(successOrFailure){
+        errorDiv.innerHTML +=  `<h2 style="text-align:center; color:green; margin-top:30px;">${msg}</h2>`
+    } else{
+        errorDiv.innerHTML +=  `<h2 style="text-align:center; color:red; margin-top:30px;">${msg}</h2>`
+    }       
 }

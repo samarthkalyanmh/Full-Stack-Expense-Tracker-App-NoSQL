@@ -35,7 +35,7 @@ const forgotPassword = async (req, res, next) => {
         sendSmtpEmail.subject = "Reset-Password"
         sendSmtpEmail.textContent = "Hey Click below to reset Your Password"
 
-        sendSmtpEmail.htmlContent = `<form onsubmit="submitPass(event)" ><a href="http://34.194.245.165/password/resetpassword/${uuidx}">Reset Password</a></form>`
+        sendSmtpEmail.htmlContent = `<form onsubmit="submitPass(event)" ><a href="http://localhost:3000/password/resetpassword/${uuidx}">Reset Password</a></form>`
 
         // console.log(sendSmtpEmail.htmlContent)
 
@@ -52,7 +52,7 @@ const forgotPassword = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(500).json({ error: err, message: false })
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 
@@ -79,7 +79,7 @@ const sendResetPasswordForm = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(500).json({message: "Link not working"})
+        res.status(500).json(err, {message: 'Internal Server Error 500, Link not working'})
     }
 }
 
@@ -107,6 +107,7 @@ try{
     } catch(err){
         await t.rollback()
         console.log(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 
 }

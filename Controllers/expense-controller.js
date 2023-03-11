@@ -14,7 +14,7 @@ const UserServices = require('../Services/User-services')
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err)    
+        res.status(500).json(err, {message: 'Internal Server Error 500'})  
     }
 } */
 
@@ -47,11 +47,11 @@ const getAllExpenses = async (req, res, next) => {
     
             })
             return rows.data
-        }).catch(err => console.log(err))
-        // console.log(JSON.stringify(pageData))
+        })
 
     } catch(err){
-        console.log(err); console.log("error at get expense")
+        console.log(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 
@@ -83,7 +83,7 @@ const addExpense = async (req, res, next) => {
     } catch(err) {
         await t.rollback()
         console.log(err)
-        res.status(500).json(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 
@@ -112,9 +112,9 @@ const deleteExpense = async (req, res, next) => {
         res.sendStatus(200)
 
     } catch(err){
-        console.log(err)
         t.rollback()
-        res.status(500).json(err)
+        console.log(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }   
 }
 

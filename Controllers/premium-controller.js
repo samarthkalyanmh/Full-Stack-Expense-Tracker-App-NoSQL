@@ -32,6 +32,7 @@ const showLeaderBoard = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
+        res.status(500).json(err, {message: 'Internal Server Error 500'})
     }
 }
 
@@ -56,23 +57,29 @@ const downloadExpense = async (req, res, next) => {
             res.status(200).json({fileURL, message: 'response from backend' })
         
         } else{
-            res.status(401).json({message: 'unauthorized, not a premium user'})
+            res.status(401).json({message: 'Unauthorized, not a premium user'})
         }
         
     } catch(err){ 
         console.log(err)
-        res.status(500).json(err)
+        res.status(500).json(err, { message: 'Internal server error 500'})
     }
 }
 
 const getOldDownloadData = async (req, res, next) => {
     try{
             const oldDownloadURLs = await FileURL.findAll({where: {UserId: req.user.id}})
-            res.status(200).json(oldDownloadURLs)
+            
+            if(req.user.isPremiumUser){
+                res.status(200).json(oldDownloadURLs)
+            } else{
+                res.status(404).json({message: 'Not a premium user'})
+            }
+            
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err)
+        res.status(500).json(err, { message: 'Internal server error 500'})
     }
 }
 
