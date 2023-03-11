@@ -392,3 +392,9 @@ function displayMessage(msg, successOrFailure){
         errorDiv.innerHTML +=  `<h2 style="text-align:center; color:red; margin-top:30px;">${msg}</h2>`
     }       
 }
+
+function logout(){
+    event.preventDefault()
+    localStorage.removeItem('token')
+    location.reload()
+}

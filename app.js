@@ -46,7 +46,6 @@ app.use(premiumRoute)
 app.use(passwordRoute)
 
 app.use((req, res) => {
-    console.log('hey bud')
     res.sendFile(path.join(__dirname, `public/${req.url}`))
 })
 
