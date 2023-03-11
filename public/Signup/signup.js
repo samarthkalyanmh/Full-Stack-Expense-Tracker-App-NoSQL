@@ -14,7 +14,7 @@ async function signup(e){
             password
         }
     
-        const response = await axios.post('http://54.167.151.207:3000/user/signup', userDetails)
+        const response = await axios.post('http://54.167.151.207/user/signup', userDetails)
 
         if(response.status === 201){
 
