@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         if(token != null){  
 
-                // await axios.get('http://localhost:3000/get-all-expenses', {
+                // await axios.get('http://34.194.245.165/get-all-expenses', {
                 //     headers: {'authorization': token}
                 // })
                 // .then(res => {
@@ -42,7 +42,7 @@ async function getExpense(page) {
 
     const token = localStorage.getItem('token')
 
-    const dbData = await axios.get(`http://localhost:3000/get-all-expenses?page=${page}&count=${count}`, {
+    const dbData = await axios.get(`http://34.194.245.165/get-all-expenses?page=${page}&count=${count}`, {
         headers: {'authorization': token}
     })
 
@@ -154,7 +154,7 @@ async function saveExpenseToDatabase(e){
             category
         }
 
-        const response = await axios.post('http://localhost:3000/add-expense', obj, {
+        const response = await axios.post('http://34.194.245.165/add-expense', obj, {
             headers: {'authorization': token}
         })
 
@@ -178,7 +178,7 @@ async function deleteExpense(id){
     try{
         const token = localStorage.getItem('token')
 
-        await axios.delete(`http://localhost:3000/delete-expense/${id}`, {
+        await axios.delete(`http://34.194.245.165/delete-expense/${id}`, {
             headers: {'authorization': token}
         })
 
@@ -226,7 +226,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     try{
         // console.log('pressed button')
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
+        const response = await axios.get('http://34.194.245.165/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
         const order_id = response.data.order.id 
 
         console.log(response)
@@ -237,7 +237,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     
             //this handler will handle the success payment
             "handler": async (res) => {
-                const backEndRes = await axios.post('http://localhost:3000/updateTransactionStatus', {
+                const backEndRes = await axios.post('http://34.194.245.165/updateTransactionStatus', {
                     order_id: options.order_id,
                     payment_id: res.razorpay_payment_id //given by razorpay(res here is given by razorpay)
                 }, { headers: {'authorization': token }})
@@ -256,7 +256,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
         rzp.on('payment.failed', async (res) => {
             console.log(res)
 
-            await axios.post('http://localhost:3000/updateTransactionStatus/failed', {
+            await axios.post('http://34.194.245.165/updateTransactionStatus/failed', {
                 order_id: order_id
                 }, { headers: {'authorization': token }})
 
@@ -282,7 +282,7 @@ function showPremiumFeatures(){
 
         showLeaderBoardInputButton.onclick = async () => {
             const token = localStorage.getItem('token')
-            const leaderBoardArray = await axios.get('http://localhost:3000/premium/showleaderboard', {
+            const leaderBoardArray = await axios.get('http://34.194.245.165/premium/showleaderboard', {
                 headers: {'authorization': token}
             })
 
@@ -323,7 +323,7 @@ function parseJwt (token) {
 document.getElementById('download-expenses-button').onclick = async (e) => {
     try{
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/download-expense', {
+        const response = await axios.get('http://34.194.245.165/download-expense', {
             headers: {'authorization': token}
         })
 
@@ -347,7 +347,7 @@ document.getElementById('show-old-downloads-button').onclick = async (e) => {
     try{
             const token = localStorage.getItem('token')
 
-            const oldDownloads = await axios.get('http://localhost:3000/get-old-downloads', {
+            const oldDownloads = await axios.get('http://34.194.245.165/get-old-downloads', {
                 headers: {'authorization': token}
             })
 
