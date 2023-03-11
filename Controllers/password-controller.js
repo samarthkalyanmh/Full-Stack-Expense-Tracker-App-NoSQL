@@ -48,6 +48,8 @@ const forgotPassword = async (req, res, next) => {
         const userRequesting = await User.findAll({where: {email: email}}) 
         await ForgotPassword.create({uuid: uuidx, UserId: userRequesting[0].id, isactive: true})
 
+        console.log('email sent successfully')
+
         res.status(200).json({ message: "Email sent successfully.", uuid: uuidx })
 
     } catch(err){
@@ -102,9 +104,11 @@ try{
 
             await User.update({password: hashedPass}, {where: {id: UserId}, transaction: t})
 
+            res.redirect('/Login/login.html')
+
             await t.commit()    
         }
-    } catch(err){
+    } catch(err){   
         await t.rollback()
         console.log(err)
         res.status(500).json(err, {message: 'Internal Server Error 500'})
