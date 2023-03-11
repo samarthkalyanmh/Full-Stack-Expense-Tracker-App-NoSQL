@@ -12,7 +12,7 @@ async function login(e){
             password
         }
     
-        const response = await axios.post('http://34.194.245.165/user/login', loginDetails)
+        const response = await axios.post('http://localhost:3000/user/login', loginDetails)
 
         if(response.status === 200){
             
@@ -59,7 +59,7 @@ function showPremiumFeatures(){
 
     showLeaderBoardInputButton.onclick = async () => {
         // const token =localStorage.getItem('token')
-        // const leaderBoardArray = await axios.get('http://34.194.245.165/premium/showleaderboard', {
+        // const leaderBoardArray = await axios.get('http://localhost:3000/premium/showleaderboard', {
         //     headers: {'authorization': token}
         // })
 
