@@ -48,6 +48,7 @@ const login = async(req, res, next) => {
     try{ 
         const {email, password} = req.body
 
+        console.log('entering login function')
         if(!email || !password){
             return res.status(400).json("bad parameters")
         }
