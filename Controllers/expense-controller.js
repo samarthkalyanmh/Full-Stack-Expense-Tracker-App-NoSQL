@@ -14,7 +14,7 @@ const UserServices = require('../Services/User-services')
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err, {message: 'Internal Server Error 500'})  
+        res.status(500).json({message: 'Internal Server Error 500', err: err})  
     }
 } */
 
@@ -51,7 +51,7 @@ const getAllExpenses = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err, {message: 'Internal Server Error 500'})
+        res.status(500).json({message: 'Internal Server Error 500', err: err})
     }
 }
 

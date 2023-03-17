@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-// app.use(express.static('Frontend'))
+// app.use(express.static('public'))
 require('dotenv').config()
 const path = require('path')
 
@@ -25,8 +25,6 @@ const app = express()
 app.use(cors())
 
 const accessLogStream =  fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
-
-
 app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(bodyParser.json({extended:false}))
@@ -46,7 +44,16 @@ app.use(premiumRoute)
 app.use(passwordRoute)
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, `public/${req.url}`))
+    // console.log(req.url == '/Signup/signup.html')
+    // console.log(`public/${req.url}`)
+
+    // console.log(req.url)
+    // if(req.url === '/Login/login.html' || req.url === '/Forgot-password/forgot-password.html' || req.url === '/Signup/signup.html' || req.url === '/Home/expensetracker-home.html' || req.url === '/Report-generation/report-generation.html'){
+        res.sendFile(path.join(__dirname, `public/${req.url}`))
+
+    // } else{
+    //     res.sendFile(path.join(__dirname, `public/Login/login.html`))
+    // } 
 })
 
 

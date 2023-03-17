@@ -32,7 +32,7 @@ const showLeaderBoard = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err, {message: 'Internal Server Error 500'})
+        res.status(500).json({message: 'Internal Server Error 500', err: err})
     }
 }
 
@@ -62,7 +62,7 @@ const downloadExpense = async (req, res, next) => {
         
     } catch(err){ 
         console.log(err)
-        res.status(500).json(err, { message: 'Internal server error 500'})
+        res.status(500).json({message: 'Internal Server Error 500', err: err})
     }
 }
 
@@ -79,7 +79,7 @@ const getOldDownloadData = async (req, res, next) => {
 
     } catch(err){
         console.log(err)
-        res.status(500).json(err, { message: 'Internal server error 500'})
+        res.status(500).json({message: 'Internal Server Error 500', err: err})
     }
 }
 

@@ -30,13 +30,13 @@ const purchasePremium = async (req, res, next) => {
             })
             .catch(err => {
                 console.log(err)
-                res.status(500).json(err, {message: 'something went wrong in razorpay order creation process'})
+                res.status(500).json({message: 'something went wrong in razorpay order creation process', err: err})
             })
         })  
 
     } catch(err){   
         console.log('Error in purchasePremium', err)
-        res.status(500).json(err, {message: 'something went wrong in razorpay order creation process'})
+        res.status(500).json({message: 'something went wrong in razorpay order creation process', err: err})
     }
 }
 
@@ -67,7 +67,7 @@ const updateTransactionStatus = async (req, res, next) => {
         await t.rollback()
 
         console.log('Error in updateTransactionStatus', err)
-        res.status(500).json(err, {message: 'Internal Server Error 500'})
+        res.status(500).json({message: 'Internal Server Error 500', err})
     }
 }
 
