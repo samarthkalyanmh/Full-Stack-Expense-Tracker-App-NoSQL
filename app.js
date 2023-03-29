@@ -77,3 +77,4 @@ sequelize.sync()
     console.log(err)
 })
 
+//To check
