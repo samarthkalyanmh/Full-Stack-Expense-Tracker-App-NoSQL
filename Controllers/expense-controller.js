@@ -5,6 +5,8 @@ require('dotenv').config()
 const S3Services = require('../Services/S3-services')
 const UserServices = require('../Services/User-services')
 
+const mongoose = require('mongoose')
+
 /* const getAllExpenses = async (req, res, next) => {
 
     try{
@@ -20,34 +22,40 @@ const UserServices = require('../Services/User-services')
 
 const getAllExpenses = async (req, res, next) => {
     try {
+
+        //OLD CODE
         //writing + here before req.query.page helps convert string to number
-        const PAGE = +req.query.page || 1
-        const ITEMS_PER_PAGE = +req.query.count || 3
+        // const PAGE = +req.query.page || 1
+        // const ITEMS_PER_PAGE = +req.query.count || 3
 
-        const userId = req.user.id
+        // const userId = req.user.id
       
-        const count = await Expense.count({where : {UserId : userId}})
+        // const count = await Expense.count({where : {UserId : userId}})
 
-        await Expense.findAll({
+        // await Expense.findAll({
     
-            offset :(PAGE - 1)*ITEMS_PER_PAGE,
-            limit : ITEMS_PER_PAGE,
-            where : { UserId : userId}
+        //     offset :(PAGE - 1)*ITEMS_PER_PAGE,
+        //     limit : ITEMS_PER_PAGE,
+        //     where : { UserId : userId}
 
-        }).then((rows)=>{
+        // }).then((rows)=>{
 
-            res.json({
-                rows : rows,
-                currentpage : PAGE,
-                hasnextpage : ITEMS_PER_PAGE * PAGE < count,
-                nextpage : PAGE + 1,
-                haspreviouspage : PAGE > 1,
-                previouspage : PAGE -1,
-                lastpage : Math.ceil(count/ITEMS_PER_PAGE)
+        //     res.json({
+        //         rows : rows,
+        //         currentpage : PAGE,
+        //         hasnextpage : ITEMS_PER_PAGE * PAGE < count,
+        //         nextpage : PAGE + 1,
+        //         haspreviouspage : PAGE > 1,
+        //         previouspage : PAGE -1,
+        //         lastpage : Math.ceil(count/ITEMS_PER_PAGE)
     
-            })
-            return rows.data
-        })
+        //     })
+        //     return rows.data
+        // })
+
+        //NEW CODE
+        console.log('get all expenses not working rn>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        res.json({message: 'get all expenses not working rn'})
 
     } catch(err){
         console.log(err)
@@ -58,9 +66,11 @@ const getAllExpenses = async (req, res, next) => {
 const addExpense = async (req, res, next) => {
 
     //This below declaration should be outside the try block coz if we declare it inside try block, then we can't access it in catch block
+    
     const t = await sequelize.transaction()
 
     try{
+        /*
         const amount = req.body.amount
         const description = req.body.description
         const category = req.body.category
@@ -78,7 +88,22 @@ const addExpense = async (req, res, next) => {
         await req.user.update({totalExpense: currentTotalExpense.totalExpense + Number(amount)}, {transaction: t})
 
         await t.commit()
-        res.status(201).json(data)
+        res.status(201).json(data) */
+
+
+        //NEW CODE
+        const amount = req.body.amount
+        const description = req.body.description
+        const category = req.body.category
+        const UserId = req.user._id
+
+        if(amount === '' || !description || !category){
+            throw new Error("Bad Parameters")
+        } 
+
+        const data = await Expense.create({})
+
+        
         
     } catch(err) {
         await t.rollback()

@@ -1,6 +1,7 @@
 async function signup(e){
     
     try{
+
         e.preventDefault()
     
         let name = document.getElementById('name').value
@@ -15,6 +16,8 @@ async function signup(e){
         }
     
         const response = await axios.post('http://localhost:3000/user/signup', userDetails)
+
+        console.log(response)
 
         if(response.status === 201){
 
