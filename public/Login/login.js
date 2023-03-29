@@ -63,7 +63,7 @@ function showPremiumFeatures(){
             leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
             // leaderBoardArray.data.forEach(userDetails => {
             //     leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name}--Total Expense:${userDetails.total_cost}</li>`
-            // });
+            // })
     }
 
     let parDiv = document.getElementById('message')

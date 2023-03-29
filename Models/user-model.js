@@ -8,9 +8,12 @@ const User = new mongoose.Schema({
   email : String,
   password : String,
   isPremiumUser : Number,
-  totalExpense: Number
+  totalExpense: {
+    type: Number,
+    default: 0
+  }
 })
 
 
-module.exports = mongoose.model('Users', User)
+module.exports = mongoose.model('users', User)
 

@@ -36,7 +36,8 @@ const signup = async (req, res, next) => {
             await User.create({
                 name: name,
                 email: email,
-                password: hashedPass
+                password: hashedPass,
+                totalExpense: 0
             })
 
             res.status(201).json({message: 'Successfully created new user'})
@@ -70,7 +71,7 @@ const login = async(req, res, next) => {
                     throw new Error({message: "Something went wrong"})
                 }
                 if(result){
-                    return res.status(200).json({message: "login successful", token: generateAccessToken(userTryingToLogin[0]._id, userTryingToLogin[0].name, userTryingToLogin[0].isPremiumUser), isPremiumUser: userTryingToLogin[0].isPremiumUser})
+                    return res.status(200).json({message: "Login successful", token: generateAccessToken(userTryingToLogin[0]._id, userTryingToLogin[0].name, userTryingToLogin[0].isPremiumUser), isPremiumUser: userTryingToLogin[0].isPremiumUser})
                 } else {
                     return res.status(400).json({message: "Incorrect password"})
                 }

@@ -123,9 +123,9 @@ function setCountInLocalStorage() {
 function showExpenseOnScreen(expense){
     try{
 
-            let expenseLi = `<li id='${expense.id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
-            <button onclick=deleteExpense('${expense.id}') class="delete-buttons">Delete</button>
-            <button onclick=editExpense(${expense.id})>Edit</button>
+            let expenseLi = `<li id='${expense._id}'><span>${expense.amount}-${expense.description}-${expense.category}</span>
+            <button onclick=deleteExpense('${expense._id}') class="delete-buttons">Delete</button>
+            <button onclick=editExpense('${expense._id}')>Edit</button>
             </li>`
             let parDiv = document.getElementById('list')
     
@@ -158,6 +158,8 @@ async function saveExpenseToDatabase(e){
             headers: {'authorization': token}
         })
 
+        console.log('added expense', response.data)
+
         showExpenseOnScreen(response.data)
 
         document.getElementById('amount').value = ''
@@ -174,7 +176,6 @@ async function saveExpenseToDatabase(e){
 }
 
 async function deleteExpense(id){
-
     try{
         const token = localStorage.getItem('token')
 
@@ -207,9 +208,9 @@ function removeExpenseFromUi(id){
 
 function editExpense(id){
     try{
+
             let content = document.getElementById(id).firstElementChild.innerText
             let vals = content.split('-')
-            console.log(vals)
 
             document.getElementById('amount').value = vals[0]
             document.getElementById('description').value = vals[1]
@@ -226,8 +227,9 @@ document.getElementById('razorpay-button').onclick = async (e) => {
     try{
         // console.log('pressed button')
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/purchase/premium', { headers: {'authorization': token}}) //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
-        const order_id = response.data.order.id 
+        const response = await axios.get('http://localhost:3000/purchase/premium', { headers: {'authorization': token}}) 
+        //Informing backend that a user wants to buy premium and in backend order_id is created and sent, which gets stored in const response variable here
+        const order_id = response.data.order.id
 
         console.log(response)
 

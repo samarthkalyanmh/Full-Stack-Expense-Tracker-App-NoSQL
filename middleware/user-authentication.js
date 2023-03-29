@@ -8,22 +8,9 @@ const authenticate = async (req, res, next) => {
         const token = req.header('authorization')
         const user = jwt.verify(token, process.env.SECRET_KEY)
 
-        console.log(user)
-
-        console.log('token in backend>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', token) 
-
-        // await User.findByPk(user.userId)
-        // .then(user => {
-        //     req.user = user
-        //     next()
-        // })
-        const userinDb = await User.find({_id: user.userId})
-
-        console.log('user in DB is<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', userinDb)
+        const userinDb = await User.findOne({_id: user.userId})
 
         req.user = userinDb
-
-        console.log('req.user is>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.user)
         next()
         
     } catch(err){
