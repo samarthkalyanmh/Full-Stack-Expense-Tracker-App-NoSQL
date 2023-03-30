@@ -1,4 +1,3 @@
-const sequelize = require('../util/database')
 const uuid = require('uuid')
 const ForgotPassword = require('../Models/forgot-password-model')
 const User = require('../Models/user-model')
@@ -6,12 +5,9 @@ const bcrypt = require('bcrypt')
 
 require('dotenv').config()
 
-
 function generateUUID() {
     return uuid.v1()
 }
-
-// console.log(generateUUID())
 
 const forgotPassword = async (req, res, next) => {
     try{
@@ -45,12 +41,11 @@ const forgotPassword = async (req, res, next) => {
         await apiInstance.sendTransacEmail(sendSmtpEmail)
 
         //Code to create a forgot password row in database
-        const userRequesting = await User.findAll({where: {email: email}}) 
-        await ForgotPassword.create({uuid: uuidx, UserId: userRequesting[0].id, isactive: true})
+        const userRequesting = await User.findOne({email: email}) 
 
-        console.log('email sent successfully')
+        await ForgotPassword.create({uuid: uuidx, UserId: userRequesting._id, isactive: true})
 
-        res.status(200).json({ message: "Email sent successfully.", uuid: uuidx })
+        res.status(200).json({ message: "Email sent successfully.", uuid: uuidx})
 
     } catch(err){
         console.log(err)
@@ -62,7 +57,7 @@ const forgotPassword = async (req, res, next) => {
 const sendResetPasswordForm = async (req, res, next) => {
     try{
         const uuid = req.params.uuid
-        const row = await ForgotPassword.findAll({where: {uuid: uuid}})
+        const row = await ForgotPassword.find({uuid: uuid})
         if(row && row[0].isactive){
             res.status(200).send(`<html>
                                     <script>
@@ -88,28 +83,28 @@ const sendResetPasswordForm = async (req, res, next) => {
 
 const updatePassword = async (req, res, next) => {
 
-    const t = await sequelize.transaction()
+    // const t = await sequelize.transaction()
 
 try{   
         const uuid = req.params.uuid
-        const row = await ForgotPassword.findAll({where: {uuid: uuid}})
+        const row = await ForgotPassword.find({uuid: uuid})
         const newPassword = req.query.newpassword
 
         if(row){
             const UserId = row[0].UserId
-            await ForgotPassword.update({isactive: false}, {where: {uuid: uuid}, transaction: t})
+            await ForgotPassword.updateOne({uuid: uuid}, {$set: {isactive: false}})
 
             const salt = await bcrypt.genSalt(10)
             const hashedPass = await bcrypt.hash(newPassword, salt)
 
-            await User.update({password: hashedPass}, {where: {id: UserId}, transaction: t})
+            await User.updateOne({_id: UserId}, {$set: {password: hashedPass}})
 
             res.redirect('/Login/login.html')
 
-            await t.commit()    
+            // await t.commit()    
         }
-    } catch(err){   
-        await t.rollback()
+    } catch(err){       
+        // await t.rollback()
         console.log(err)
         res.status(500).json({message: 'Internal Server Error 500', err: err})
     }

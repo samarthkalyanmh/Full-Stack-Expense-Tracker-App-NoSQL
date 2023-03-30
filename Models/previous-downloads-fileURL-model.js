@@ -1,17 +1,13 @@
-const Sequelize = require('sequelize')
+const mongoose = require('mongoose')
 
-const sequelize = require('../util/database')
-
-const previousDownloads = sequelize.define('PreviousDownloads', {
-    fileURL:{
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    fileName: {
-        type: Sequelize.STRING,
-        allowNull: false
+const previousDownloads = new mongoose.Schema({
+    fileURL : String,
+    fileName: String,
+    UserId : {
+        type : mongoose.SchemaTypes.ObjectId, 
+        ref:'users'
     }
 })
 
+module.exports = mongoose.model('previousdownloads', previousDownloads)
 
-module.exports =  previousDownloads

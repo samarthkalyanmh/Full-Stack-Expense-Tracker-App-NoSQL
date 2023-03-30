@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 require('dotenv').config()
 const path = require('path')
 
+const mongoose = require('mongoose')
+
 const morgan = require('morgan')
 const fs = require('fs')
 // const helmet = require('helmet')
@@ -36,63 +38,31 @@ app.use(bodyParser.json({extended:false}))
 const signupRoute = require('./Routes/signup-route')
 const loginroute = require('./Routes/login-route')
 const expenseRoute = require('./Routes/expense-route')
+const passwordRoute = require('./Routes/password-route')
+const premiumRoute = require('./Routes/premium-route')
 // const purchaseRoute = require('./Routes/purchase-route')
-// const premiumRoute = require('./Routes/premium-route')
-// const passwordRoute = require('./Routes/password-route')
 
 app.use(signupRoute)
 app.use(loginroute)
 app.use(expenseRoute)
+app.use(passwordRoute) 
+app.use(premiumRoute)
 // app.use(purchaseRoute)
-// app.use(premiumRoute)
-// app.use(passwordRoute)   
+  
 
-
-console.log('hitting here') 
 
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, `public/${req.url}`))
-})
+});
 
 
-// User.hasMany(Expense)
-// Expense.belongsTo(User)
-
-// User.hasMany(Order)
-// Order.belongsTo(User)
-
-// User.hasMany(ForgotPassword)
-// ForgotPassword.belongsTo(User)
-
-// User.hasMany(FileURL)
-// FileURL.belongsTo(User)
-
-// sequelize.sync()
-// .then(() => {
-//     app.listen(3000)
-// }) 
-// .catch(err => {
-//     console.log(err)
-// })
-
-const mongoose = require('mongoose')
-
-mongoConnection(process.env.MONGO_URL)  
+(function(){ 
     
-async function mongoConnection(url){
-
-    // console.log(url)
-    mongoose.connect(url)   
-    .then( () => {  
-        console.log("Connected Succesfully")
-        app.listen(3000)    
+    console.log('inside')
+    mongoose.connect(process.env.MONGODB_ATLAS_URL)
+    .then(() => {
+        console.log('Connected to atlas!')
+        app.listen(3000)
     })
-    .catch(err => {console.log(err)})   
-
-}
-
-//Below code why not working??
-// mongoose.connect(process.env.MONGO_URL)
-// .then(() => {
-//     app.listen(4000)
-// })
+    .catch(err => console.log(err))
+})()

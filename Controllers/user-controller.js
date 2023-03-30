@@ -10,7 +10,7 @@ const generateAccessToken = (id, name, isPremiumUser) => {
 const signup = async (req, res, next) => {
     try{
 
-        console.log('hitting here')
+        // console.log('hitting here')
 
         let {name, email, password} = req.body
         email = email.toLowerCase()
@@ -37,7 +37,8 @@ const signup = async (req, res, next) => {
                 name: name,
                 email: email,
                 password: hashedPass,
-                totalExpense: 0
+                totalExpense: 0,
+                isPremiumUser: false
             })
 
             res.status(201).json({message: 'Successfully created new user'})
