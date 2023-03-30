@@ -24,7 +24,6 @@ const purchasePremium = async (req, res, next) => {
             }
 
             //saving order details in DataBase
-            //req.user.createOrder({orderid: order.id, status:'PENDING'}) 
             Order.create({orderid: order.id, status:'PENDING'})
 
             .then(() => {
@@ -49,14 +48,8 @@ const updateTransactionStatus = async (req, res, next) => {
         
         const { payment_id, order_id} = req.body
 
-        //const order  = await Order.findOne({orderid : order_id}) 
-
-        // const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'})
-        // const promise2 =  req.user.update({ isPremiumUser: true })
-
         const promise1 = Order.updateOne({orderid: order_id}, {paymentid: payment_id, status: 'SUCCESSFUL'})
         const promise2 = User.updateOne({_id: req.user._id}, {isPremiumUser: true})
-
 
         //These below declarations must be made here itself to get the updated isPremiumUser status, if we make it above we will get old value which was null
         const userId = req.user._id
@@ -67,50 +60,33 @@ const updateTransactionStatus = async (req, res, next) => {
             // await t.commit()
             return res.status(202).json({sucess: true, message: "Transaction Successful", token: userController.generateAccessToken(userId, name, isPremiumUser) }) 
         }).catch(async (error ) => {
-            // await t.rollback()
             throw new Error(error)
         })   
                 
     } catch (err) {
-        // await t.rollback()
-
         console.log('Error in updateTransactionStatus', err)
         res.status(500).json({message: 'Internal Server Error 500', err: err})
     }
 }
 
-//Not working yet
 const updateTransactionStatusFailed = async (req, res, next) => {
 
     // const t = await sequelize.transaction()
-
     try{
         const userId = req.user._id
         const name = req.user.name
 
-        console.log('transaction failed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-
         const { order_id } = req.body
-        // const order  = await Order.findOne({where : {orderid : order_id}}) 
 
+        Order.updateOne({orderid: order_id}, {paymentid: 'FAILED', status: 'FAILED'})
 
-
-        /* const promise1 =  order.update({ paymentid: 'FAILED', status: 'FAILED'}, { transaction: t }) 
-        const promise2 =  req.user.update({ isPremiumUser: false }, { transaction: t })  */
-
-        const promise1 = Order.updateOne({orderid: order_id}, {paymentid: 'FAILED', status: 'FAILED'})
-        // const promise2 = User.updateOne()
-
-        Promise.all([promise1]).then(async ()=> {
-            // await t.commit()
+        .then(async ()=> {
             return res.status(403).json({result: false, message: "Transaction Failed machi", token: userController.generateAccessToken(userId, name) })
-        }).catch(async (error ) => {
-            // await t.rollback()   
+        }).catch(async (error ) => { 
             throw new Error(error)
         }) 
 
     } catch(err){
-        // await t.rollback()
         console.log('Error in updateTransactionStatusFailed', err)
         res.status(500).json({ error: err, message: 'Something went wrong'})
     }

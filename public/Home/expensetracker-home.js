@@ -267,7 +267,7 @@ document.getElementById('razorpay-button').onclick = async (e) => {
 
     } catch(err){
         console.log(err)
-        displayMessage(JSON.stringify(err), false)
+        displayMessage(err.message, false)
     } 
 }
 
