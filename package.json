@@ -21,12 +21,9 @@
     "mongoose": "^7.0.3",
     "morgan": "^1.10.0",
     "mysql2": "^3.1.2",
-    "razorpay": "^0.0.0",
+    "razorpay": "^2.8.6",
     "sequelize": "^6.28.0",
     "sib-api-v3-sdk": "^8.5.0",
     "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
   }
 }
